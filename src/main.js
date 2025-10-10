@@ -1,4 +1,5 @@
 import { Start } from './scenes/Start.js';
+import { FirstLevel } from './scenes/firstLevel.js';
 
 const config = {
     type: Phaser.AUTO,
@@ -13,7 +14,7 @@ const config = {
     },
     backgroundColor: '#ffffff',
     scene: [
-        Start
+        FirstLevel
     ]
 }
 
