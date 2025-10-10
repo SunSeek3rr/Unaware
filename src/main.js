@@ -1,5 +1,6 @@
 import { Start } from './scenes/Start.js';
 import { FirstLevel } from './scenes/firstLevel.js';
+import Global from './global.js';
 
 const config = {
     type: Phaser.AUTO,
@@ -8,7 +9,7 @@ const config = {
     physics:{
         default: 'arcade',
         arcade:{
-            gravity : { y: 600},
+            gravity : { y: Global.gravity},
             debug : false
         }
     },
