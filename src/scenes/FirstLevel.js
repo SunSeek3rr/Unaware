@@ -6,6 +6,7 @@ let floor;
 let obstacles;
 let walls;
 let ladders;
+let lantern, lanterns;
 let blockSize = 108;
 let blockX, blockY;
 let lastKey = 'right';
@@ -33,6 +34,7 @@ export class FirstLevel extends Phaser.Scene{
         this.load.image('ladder', 'assets/ladder_block.png');
         this.load.image('obstacle-small', 'assets/one_way_block.png');
         this.load.spritesheet('player', 'assets/character_ilab.png', { frameWidth: 54, frameHeight: 59 });
+        this.load.spritesheet('lantern', 'assets/lantern_block.png', { frameWidth : 54, frameHeight : 54});
 
     }
 
@@ -46,10 +48,13 @@ export class FirstLevel extends Phaser.Scene{
         obstacles = this.physics.add.staticGroup();
         smallObstacles = this.physics.add.staticGroup();
 
-        // smallObstacles.setCollision(false, false, true, false);
         walls = this.physics.add.staticGroup();
 
         ladders = this.physics.add.staticGroup();
+
+        lanterns = this.physics.add.staticGroup();
+
+        
 
         function placeOnGrid(scene, x, y, type, count){
             blockX = 108 * x;
@@ -84,6 +89,10 @@ export class FirstLevel extends Phaser.Scene{
                 let block = ladders.create(blockX, blockY, 'ladder').setOrigin(0,0);
                 block.refreshBody();
 
+            }
+            if(type == 'lantern' && !count){
+                lantern = scene.add.sprite(blockX,blockY, 'lantern').setScale(1.5).setOrigin(-0.2,0);
+                lanterns.add(lantern);
             }
 
 
@@ -137,6 +146,15 @@ export class FirstLevel extends Phaser.Scene{
                     let block = ladders.create(blockX, blockY, 'ladder').setOrigin(0,0);
                     block.refreshBody();
                     block.body.immovable = true;
+                }
+            }
+            if(type == 'lantern' && count){
+                for(let i = x ; i < count; i++){
+                    blockX = 108 * i;
+                    blockY = 108 * y;
+
+                    let block = lanterns.create(blockX, blockY, 'lantern').setOrigin(0,0);
+                    block.refreshBody();
                 }
             }
         }
@@ -217,6 +235,9 @@ export class FirstLevel extends Phaser.Scene{
         placeOnGrid(this, 10, 1, 'ladder', 12);
         placeOnGrid(this, 10, 2, 'ladder', 12);
 
+        // Lanternes
+
+        placeOnGrid(this, 2, 1, 'lantern');
 
         player = this.physics.add.sprite(blockSize*1.5,blockSize, 'player').setScale(1.3).refreshBody();
 
@@ -257,6 +278,13 @@ export class FirstLevel extends Phaser.Scene{
             repeat: -1
         });
 
+        this.anims.create({
+            key: 'lantern',
+            frames: this.anims.generateFrameNumbers('lantern', { start: 0, end: 1 }),
+            frameRate: 7,
+            repeat: -1
+        });
+
         this.physics.add.collider(player, floor, function(){
             hasTouchedFloor = true;
 
@@ -273,7 +301,7 @@ export class FirstLevel extends Phaser.Scene{
         this.cameras.main.startFollow(player);
         this.cameras.main.setFollowOffset(0, 0);
 
-        
+        // lantern.preFX.addGlow(0xF2AD45, 2, 2, false);
 
         }
         
@@ -281,7 +309,7 @@ export class FirstLevel extends Phaser.Scene{
     
     update(){
         
-        // this.bg.tilePositionX += 1;
+
         if (hasTouchedFloor) {
             
             
@@ -318,7 +346,7 @@ export class FirstLevel extends Phaser.Scene{
         }
 
 
-
+        lantern.anims.play('lantern', true);
 
         player.setVelocityX(0);
 
