@@ -1,6 +1,7 @@
-import { Start } from './scenes/Start.js';
+// import { Start } from './scenes/Start.js';
 import { FirstLevel } from './scenes/firstLevel.js';
 import Global from './global.js';
+import { LadderTest } from './scenes/LadderTest.js'
 
 const config = {
     type: Phaser.AUTO,

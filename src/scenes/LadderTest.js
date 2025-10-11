@@ -1,53 +1,38 @@
-import Global from "../global.js";
-
-let cursors;
-let player;
-let floor;
-let obstacles;
-let walls;
+var cursors;
+var player;
+var floor;
 let ladders;
-let onLadder = false;
-let blockSize = 108;
-let blockX, blockY;
-let lastKey = 'right';
-let smallObstacles;
-let hasTouchedFloor;
+var blockX, blockY;
+let blockSize;
+let onLadder;
+var lastKey = 'right';
 const world = {
     width: 1194,
     height : 1917
 };
-
 const customBounds = new Phaser.Geom.Rectangle(0, 0, world.width, world.height);
 
+export class LadderTest extends Phaser.Scene {
 
-export class FirstLevel extends Phaser.Scene{
-
-    constructor(){
-        super("FirstLevel");
+    constructor() {
+        super('LadderTest');
     }
 
-    preload(){
-
+    preload() {
+        
         this.load.image('floor', 'assets/floor_block.png');
         this.load.image('background', 'assets/space.png');
         this.load.image('obstacle', 'assets/obstacle_block.png');
         this.load.image('ladder', 'assets/ladder_block.png');
         this.load.image('obstacle-small', 'assets/obstacle_block-small.png');
         this.load.spritesheet('player', 'assets/character_ilab.png', { frameWidth: 54, frameHeight: 59 });
-
     }
 
-    create(){
-        
+    create() {
+
         cursors = this.input.keyboard.createCursorKeys();
 
         floor = this.physics.add.staticGroup();
-        obstacles = this.physics.add.staticGroup();
-        smallObstacles = this.physics.add.staticGroup();
-
-        // smallObstacles.setCollision(false, false, true, false);
-        walls = this.physics.add.staticGroup();
-
         ladders = this.physics.add.staticGroup();
 
         function placeOnGrid(scene, x, y, type, count){
@@ -142,101 +127,25 @@ export class FirstLevel extends Phaser.Scene{
             }
         }
 
-
-        // Floor
-
         placeOnGrid(this, 0, 17, 'floor', 12);
         placeOnGrid(this, 0, 16, 'floor' , 12);
 
-        // Obstacles
+        //ladder
 
-        placeOnGrid(this, 5, 15, 'obstacle', 12);
-        placeOnGrid(this, 7, 14, 'obstacle', 12);
-        placeOnGrid(this, 9, 13, 'obstacle', 12);
+        placeOnGrid(this, 8, 15, 'ladder');
+        placeOnGrid(this, 8, 14, 'ladder');
 
-
-        // Small Obstacles
-
-        placeOnGrid(this, 7, 12, 'obstacle-small');
-
-        placeOnGrid(this, 5, 11, 'obstacle-small');
-
-        placeOnGrid(this, 2, 11, 'obstacle-small');
-        placeOnGrid(this, 1, 11, 'obstacle-small');
-
-        placeOnGrid(this, 0, 11, 'obstacle-small');
-
-        placeOnGrid(this, 2, 8, 'obstacle-small');
-
-        placeOnGrid(this, 4, 7, 'obstacle-small');
-
-        placeOnGrid(this, 6, 6, 'obstacle-small');
-
-        placeOnGrid(this, 4, 5, 'obstacle-small');
-
-        placeOnGrid(this, 2, 4, 'obstacle-small');
-
-        placeOnGrid(this, 4, 3, 'obstacle-small');
-        placeOnGrid(this, 6, 3, 'obstacle-small');
-
-        placeOnGrid(this, 0, 9, 'obstacle-small');
+        console.log(floor);
         
-
-        // Walls & upperFloor
-
-            // Left
-
-        placeOnGrid(this, 0, 0, 'wall', 3);
-        placeOnGrid(this, 0, 1, 'wall', 2);
+        player = this.physics.add.sprite(300, 200, 'player').setScale(2).refreshBody();
+        // console.log(player);
         
-        placeOnGrid(this, 0, 2, 'wall');
-        placeOnGrid(this, 0, 3, 'wall');
-        placeOnGrid(this, 0, 4, 'wall');
-        placeOnGrid(this, 0, 5, 'wall');
-
-
-            // Right
-
-        placeOnGrid(this, 7, 3, 'wall', 12);
-        placeOnGrid(this, 8, 4, 'wall', 12);
-
-        placeOnGrid(this, 10, 5, 'wall',12);
-        placeOnGrid(this, 10, 6, 'wall',12);
-
-        placeOnGrid(this, 9, 7, 'wall',12);
-
-        placeOnGrid(this, 10, 8, 'wall',12);
-        placeOnGrid(this, 10, 9, 'wall',12);
-        placeOnGrid(this, 10, 10, 'wall',12);
-        
-        // Ladder
-
-        placeOnGrid(this, 0, 9, 'ladder');
-        placeOnGrid(this, 0, 10, 'ladder');
-
-        placeOnGrid(this, 10, 0, 'ladder', 12);
-        placeOnGrid(this, 10, 1, 'ladder', 12);
-        placeOnGrid(this, 10, 2, 'ladder', 12);
-        /*  if(playerFacing == 'ladder'){
-                if(cursors.up.isDown){
-                anim(climbing);
-                player.setVelocityY(-150);
-                player.setGravity(0);
-                }
-
-            }else {
-                player.setVelocityY(0);
-                player.setGravity(700);
-            }
-        */
-
-        player = this.physics.add.sprite(blockSize*1.5,blockSize, 'player').setScale(1.3).refreshBody();
-
-        player.setGravityY(Global.gravity);
+        player.body.setGravityY(700);
         // player.setBounce(0.2);
         player.setCollideWorldBounds(true);
         player.body.setBoundsRectangle(customBounds);
 
+        
         this.anims.create({
             key: 'standingLeft',
             frames: this.anims.generateFrameNumbers('player', { start: 0, end: 1 }),
@@ -269,108 +178,65 @@ export class FirstLevel extends Phaser.Scene{
             repeat: -1
         });
 
-        this.physics.add.collider(player, floor, function(){
-            hasTouchedFloor = true;
-            console.log('touché');
-        });
-        this.physics.add.collider(player, obstacles);
-        this.physics.add.collider(player, walls);
-
-        this.hasTouchedFloor = false;
-
+        this.physics.add.collider(player, floor);
 
         this.cameras.main.setBounds(0, 0, world.width, world.height);
         
         this.cameras.main.startFollow(player);
         this.cameras.main.setFollowOffset(0, 0);
-
         
+    }
 
-        }
-        
-    
-    
-    update(){
-        
-        if (hasTouchedFloor) {
-            
-            
-            smallObstacles.children.entries.forEach(obstacle => {
-            const playerBottom = player.body.y + player.body.height;
-            const obstacleTop = obstacle.body.y;
-
-                if (playerBottom <= obstacleTop + 5 && player.body.velocity.y >= 0) {
-                    if (!obstacle.collider) {
-                        obstacle.collider = obstacle.scene.physics.add.collider(player, obstacle);
-                    }
-                } else {
-
-                    if (obstacle.collider) {
-                        obstacle.collider.destroy();
-                        obstacle.collider = null;
-                    }
-                }
-        });
-
-
-        }
-
-
-
+    update() {
         player.setVelocityX(0);
 
-        const touchingLadders = this.physics.overlap(player, ladders);
-
-        if (!touchingLadders) {
-
-            player.body.setGravityY(Global.gravity);
-
-        }else if (touchingLadders){
-
-            player.body.setGravityY(0);
+        const touching = this.physics.overlap(player, ladders);
+        if (!touching) {
+            onLadder = false;
+            player.body.setGravity(700);
+        }else{
+            onLadder = true;
+            player.body.setGravity(0);
             player.setVelocityY(0);
-
             if(cursors.up.isDown){
-                player.setVelocityY(-200);
+                player.setVelocityY(-150);
             }
         }
+        console.log(onLadder);
 
         if (cursors.left.isDown)
-            {
-                player.setVelocityX(-350);
+        {
+            player.setVelocityX(-400);
 
-                player.anims.play('left', true);
+            player.anims.play('left', true);
 
-                lastKey = 'left';
-            }
-            if (cursors.right.isDown)
-            {
-                player.setVelocityX(350);
+            lastKey = 'left';
+        }
+        if (cursors.right.isDown)
+        {
+            player.setVelocityX(400);
 
-                player.anims.play('right', true);
+            player.anims.play('right', true);
 
-                lastKey = 'right';
-            }
-            if (cursors.right.isUp && lastKey == 'right')
-            {
-                player.setVelocityX(0);
+            lastKey = 'right';
+        }
+        if (cursors.right.isUp && lastKey == 'right')
+        {
+            player.setVelocityX(0);
 
-                player.anims.play('standingRight', true);
-            }
-            if (cursors.left.isUp && lastKey == 'left')
-            {
-                player.setVelocityX(0);
+            player.anims.play('standingRight', true);
+        }
+        if (cursors.left.isUp && lastKey == 'left')
+        {
+            player.setVelocityX(0);
 
-                player.anims.play('standingLeft', true);
-            }
+            player.anims.play('standingLeft', true);
+        }
 
-            if (cursors.up.isDown && player.body.touching.down)
-            {
-                player.setVelocityY(-600);
-            }
-
-
-
-
+        if (cursors.up.isDown && player.body.touching.down)
+        {
+            player.setVelocityY(-600);
+        }
     }
+    
 }
