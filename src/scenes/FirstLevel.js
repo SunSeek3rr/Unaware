@@ -6,7 +6,6 @@ let floor;
 let obstacles;
 let walls;
 let ladders;
-let onLadder = false;
 let blockSize = 108;
 let blockX, blockY;
 let lastKey = 'right';
@@ -28,17 +27,19 @@ export class FirstLevel extends Phaser.Scene{
 
     preload(){
 
-        this.load.image('floor', 'assets/floor_block.png');
-        this.load.image('background', 'assets/space.png');
+        this.load.image('floor', 'assets/obstacle_block.png');
+        this.load.image('background', 'assets/bg_block.png');
         this.load.image('obstacle', 'assets/obstacle_block.png');
         this.load.image('ladder', 'assets/ladder_block.png');
-        this.load.image('obstacle-small', 'assets/obstacle_block-small.png');
+        this.load.image('obstacle-small', 'assets/one_way_block.png');
         this.load.spritesheet('player', 'assets/character_ilab.png', { frameWidth: 54, frameHeight: 59 });
 
     }
 
     create(){
         
+        this.bg = this.add.tileSprite(0,0, world.width, world.height, 'background').setOrigin(0,0);
+
         cursors = this.input.keyboard.createCursorKeys();
 
         floor = this.physics.add.staticGroup();
@@ -105,7 +106,7 @@ export class FirstLevel extends Phaser.Scene{
 
                     let block = scene.add.sprite(blockX, blockY, 'obstacle').setOrigin(0,0);
                     obstacles.add(block);
-                    console.log(i);
+
                 }
             }
             if(type == 'obstacle-small' && count){
@@ -137,8 +138,6 @@ export class FirstLevel extends Phaser.Scene{
                     block.refreshBody();
                     block.body.immovable = true;
                 }
-            }else if(type == 'ladder-block' && count){
-
             }
         }
 
@@ -217,23 +216,12 @@ export class FirstLevel extends Phaser.Scene{
         placeOnGrid(this, 10, 0, 'ladder', 12);
         placeOnGrid(this, 10, 1, 'ladder', 12);
         placeOnGrid(this, 10, 2, 'ladder', 12);
-        /*  if(playerFacing == 'ladder'){
-                if(cursors.up.isDown){
-                anim(climbing);
-                player.setVelocityY(-150);
-                player.setGravity(0);
-                }
 
-            }else {
-                player.setVelocityY(0);
-                player.setGravity(700);
-            }
-        */
 
         player = this.physics.add.sprite(blockSize*1.5,blockSize, 'player').setScale(1.3).refreshBody();
 
         player.setGravityY(Global.gravity);
-        // player.setBounce(0.2);
+
         player.setCollideWorldBounds(true);
         player.body.setBoundsRectangle(customBounds);
 
@@ -271,8 +259,9 @@ export class FirstLevel extends Phaser.Scene{
 
         this.physics.add.collider(player, floor, function(){
             hasTouchedFloor = true;
-            console.log('touché');
+
         });
+
         this.physics.add.collider(player, obstacles);
         this.physics.add.collider(player, walls);
 
@@ -292,6 +281,7 @@ export class FirstLevel extends Phaser.Scene{
     
     update(){
         
+        // this.bg.tilePositionX += 1;
         if (hasTouchedFloor) {
             
             
@@ -310,10 +300,23 @@ export class FirstLevel extends Phaser.Scene{
                         obstacle.collider = null;
                     }
                 }
+
+                if (Math.abs(playerBottom - obstacleTop) <= 5 
+                    && player.body.velocity.y <= 120 
+                    && cursors.down.isDown) 
+                    {
+                    obstacle.body.checkCollision.up = false;
+
+                } else {
+
+                    obstacle.body.checkCollision.up = true;
+                }
+
         });
 
 
         }
+
 
 
 
@@ -332,6 +335,9 @@ export class FirstLevel extends Phaser.Scene{
 
             if(cursors.up.isDown){
                 player.setVelocityY(-200);
+            }
+            if(cursors.down.isDown){
+                player.setVelocityY(200);
             }
         }
 
