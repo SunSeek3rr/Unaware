@@ -1,23 +1,11 @@
-import Global from "../global.js";
+import { AddCustomBounds ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor } from '../global.js';
 
-let cursors;
-let player;
-let floor;
-let obstacles;
-let walls;
-let ladders;
-let lantern, lanterns;
-let blockSize = 108;
-let blockX, blockY;
-let lastKey = 'right';
-let smallObstacles;
-let hasTouchedFloor;
 const world = {
-    width: 1194,
-    height : 1917
+  width: 1194,
+  height: 1917
 };
 
-const customBounds = new Phaser.Geom.Rectangle(0, 0, world.width, world.height);
+const customBounds = AddCustomBounds.create;
 
 
 export class FirstLevel extends Phaser.Scene{
@@ -28,136 +16,17 @@ export class FirstLevel extends Phaser.Scene{
 
     preload(){
 
-        this.load.image('floor', 'assets/obstacle_block.png');
-        this.load.image('background', 'assets/bg_block.png');
-        this.load.image('obstacle', 'assets/obstacle_block.png');
-        this.load.image('ladder', 'assets/ladder_block.png');
-        this.load.image('obstacle-small', 'assets/one_way_block.png');
-        this.load.spritesheet('player', 'assets/character_ilab.png', { frameWidth: 54, frameHeight: 59 });
-        this.load.spritesheet('lantern', 'assets/lantern_block.png', { frameWidth : 54, frameHeight : 54});
+        Preload.create(this);
 
     }
 
     create(){
-        
+        this.cursors = this.input.keyboard.createCursorKeys();
+
         this.bg = this.add.tileSprite(0,0, world.width, world.height, 'background').setOrigin(0,0);
 
-        cursors = this.input.keyboard.createCursorKeys();
-
-        floor = this.physics.add.staticGroup();
-        obstacles = this.physics.add.staticGroup();
-        smallObstacles = this.physics.add.staticGroup();
-
-        walls = this.physics.add.staticGroup();
-
-        ladders = this.physics.add.staticGroup();
-
-        lanterns = this.physics.add.staticGroup();
-
-        
-
-        function placeOnGrid(scene, x, y, type, count){
-            blockX = 108 * x;
-            blockY = 108 * y;
-
-            if(type == 'floor' && !count){
-
-                let block = scene.add.sprite(blockX, blockY, 'floor').setOrigin(0,0);
-                floor.add(block);
-
-            }
-            if(type == 'obstacle' && !count){
-
-                let block = scene.add.sprite(blockX, blockY, 'obstacle').setOrigin(0,0);
-                obstacles.add(block);
-                
-            }
-            if(type == 'obstacle-small' && !count){
-
-                let block = scene.add.sprite(blockX, blockY, 'obstacle-small').setOrigin(0,0);
-                smallObstacles.add(block);
-            }
-            if(type == 'wall' && !count){
-
-                let block = scene.add.sprite(blockX, blockY, 'obstacle').setOrigin(0,0);
-                walls.add(block);
-
-            }
-
-            if(type == 'ladder' && !count){
-
-                let block = ladders.create(blockX, blockY, 'ladder').setOrigin(0,0);
-                block.refreshBody();
-
-            }
-            if(type == 'lantern' && !count){
-                lantern = scene.add.sprite(blockX,blockY, 'lantern').setScale(1.5).setOrigin(-0.2,0);
-                lanterns.add(lantern);
-            }
-
-
-            if(type == 'floor' && count){
-
-                for(let i = x ; i < count; i++){
-                    blockX = 108 * i;
-                    blockY = 108 * y;
-                    
-                    let block = scene.add.sprite(blockX, blockY, 'floor').setOrigin(0,0);
-                    floor.add(block);
-
-                }
-            }
-            if(type == 'obstacle' && count){
-                
-                for(let i = x ; i < count; i++){
-                    blockX = 108 * i;
-                    blockY = 108 * y;
-
-                    let block = scene.add.sprite(blockX, blockY, 'obstacle').setOrigin(0,0);
-                    obstacles.add(block);
-
-                }
-            }
-            if(type == 'obstacle-small' && count){
-                
-                for(let i = x ; i < count; i++){
-                    blockX = 108 * i;
-                    blockY = 108 * y;
-
-                    let block = scene.add.sprite(blockX, blockY, 'obstacle-small').setOrigin(0,0);
-                    smallObstacles.add(block);
-                }
-            }
-            if(type == 'wall' && count){
-                for(let i = x ; i < count; i++){
-                    blockX = 108 * i;
-                    blockY = 108 * y;
-
-                    let block = scene.add.sprite(blockX, blockY, 'obstacle').setOrigin(0,0);
-                    walls.add(block);
-                }
-            }
-
-            if(type == 'ladder' && count){
-                for(let i = x ; i < count; i++){
-                    blockX = 108 * i;
-                    blockY = 108 * y;
-
-                    let block = ladders.create(blockX, blockY, 'ladder').setOrigin(0,0);
-                    block.refreshBody();
-                    block.body.immovable = true;
-                }
-            }
-            if(type == 'lantern' && count){
-                for(let i = x ; i < count; i++){
-                    blockX = 108 * i;
-                    blockY = 108 * y;
-
-                    let block = lanterns.create(blockX, blockY, 'lantern').setOrigin(0,0);
-                    block.refreshBody();
-                }
-            }
-        }
+        // Static Groups
+        StaticGroups.create(this);
 
 
         // Floor
@@ -174,29 +43,29 @@ export class FirstLevel extends Phaser.Scene{
 
         // Small Obstacles
 
-        placeOnGrid(this, 7, 12, 'obstacle-small');
+        placeOnGrid(this, 7, 12, 'obstacle_small');
 
-        placeOnGrid(this, 5, 11, 'obstacle-small');
+        placeOnGrid(this, 5, 11, 'obstacle_small');
 
-        placeOnGrid(this, 2, 11, 'obstacle-small');
-        placeOnGrid(this, 1, 11, 'obstacle-small');
+        placeOnGrid(this, 2, 11, 'obstacle_small');
+        placeOnGrid(this, 1, 11, 'obstacle_small');
 
-        placeOnGrid(this, 0, 11, 'obstacle-small');
+        placeOnGrid(this, 0, 11, 'obstacle_small');
 
-        placeOnGrid(this, 2, 8, 'obstacle-small');
+        placeOnGrid(this, 2, 8, 'obstacle_small');
 
-        placeOnGrid(this, 4, 7, 'obstacle-small');
+        placeOnGrid(this, 4, 7, 'obstacle_small');
 
-        placeOnGrid(this, 6, 6, 'obstacle-small');
+        placeOnGrid(this, 6, 6, 'obstacle_small');
 
-        placeOnGrid(this, 4, 5, 'obstacle-small');
+        placeOnGrid(this, 4, 5, 'obstacle_small');
 
-        placeOnGrid(this, 2, 4, 'obstacle-small');
+        placeOnGrid(this, 2, 4, 'obstacle_small');
 
-        placeOnGrid(this, 4, 3, 'obstacle-small');
-        placeOnGrid(this, 6, 3, 'obstacle-small');
+        placeOnGrid(this, 4, 3, 'obstacle_small');
+        placeOnGrid(this, 6, 3, 'obstacle_small');
 
-        placeOnGrid(this, 0, 9, 'obstacle-small');
+        placeOnGrid(this, 0, 9, 'obstacle_small');
         
 
         // Walls & upperFloor
@@ -239,172 +108,26 @@ export class FirstLevel extends Phaser.Scene{
 
         placeOnGrid(this, 2, 1, 'lantern');
 
-        player = this.physics.add.sprite(blockSize*1.5,blockSize, 'player').setScale(1.3).refreshBody();
+        this.player = new Player(this, 300, 200, 'player', customBounds);
 
-        player.setGravityY(Global.gravity);
+        CreateAnims.create(this);
 
-        player.setCollideWorldBounds(true);
-        player.body.setBoundsRectangle(customBounds);
+        SetDefaultCollider.create(this);
 
-        this.anims.create({
-            key: 'standingLeft',
-            frames: this.anims.generateFrameNumbers('player', { start: 0, end: 1 }),
-            frameRate: 7,
-            repeat: -1
-        });
+        SetCameras.create(this);
 
-
-
-        this.anims.create({
-            key: 'standingRight',
-            frames: this.anims.generateFrameNumbers('player', { start: 6, end:7 }),
-            frameRate: 7,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('player', { start: 2, end: 5 }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-
-
-        this.anims.create({
-            key: 'right',
-            frames: this.anims.generateFrameNumbers('player', { start: 8, end:11 }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'lantern',
-            frames: this.anims.generateFrameNumbers('lantern', { start: 0, end: 1 }),
-            frameRate: 7,
-            repeat: -1
-        });
-
-        this.physics.add.collider(player, floor, function(){
-            hasTouchedFloor = true;
-
-        });
-
-        this.physics.add.collider(player, obstacles);
-        this.physics.add.collider(player, walls);
-
-        this.hasTouchedFloor = false;
-
-
-        this.cameras.main.setBounds(0, 0, world.width, world.height);
-        
-        this.cameras.main.startFollow(player);
-        this.cameras.main.setFollowOffset(0, 0);
-
-        // lantern.preFX.addGlow(0xF2AD45, 2, 2, false);
-
+        HasTouchedFloor.create(this);
         }
         
     
     
-    update(){
-        
+    update() {
+        this.player.update();
 
-        if (hasTouchedFloor) {
-            
-            
-            smallObstacles.children.entries.forEach(obstacle => {
-            const playerBottom = player.body.y + player.body.height;
-            const obstacleTop = obstacle.body.y;
+        HasTouchedFloor.update(this);
 
-                if (playerBottom <= obstacleTop + 5 && player.body.velocity.y >= 0) {
-                    if (!obstacle.collider) {
-                        obstacle.collider = obstacle.scene.physics.add.collider(player, obstacle);
-                    }
-                } else {
-
-                    if (obstacle.collider) {
-                        obstacle.collider.destroy();
-                        obstacle.collider = null;
-                    }
-                }
-
-                if (Math.abs(playerBottom - obstacleTop) <= 5 
-                    && player.body.velocity.y <= 120 
-                    && cursors.down.isDown) 
-                    {
-                    obstacle.body.checkCollision.up = false;
-
-                } else {
-
-                    obstacle.body.checkCollision.up = true;
-                }
-
+        this.lanterns.children.entries.forEach(lantern => {
+            lantern.anims.play('lantern', true);
         });
-
-
-        }
-
-
-        lantern.anims.play('lantern', true);
-
-        player.setVelocityX(0);
-
-        const touchingLadders = this.physics.overlap(player, ladders);
-
-        if (!touchingLadders) {
-
-            player.body.setGravityY(Global.gravity);
-
-        }else if (touchingLadders){
-
-            player.body.setGravityY(0);
-            player.setVelocityY(0);
-
-            if(cursors.up.isDown){
-                player.setVelocityY(-200);
-            }
-            if(cursors.down.isDown){
-                player.setVelocityY(200);
-            }
-        }
-
-        if (cursors.left.isDown)
-            {
-                player.setVelocityX(-350);
-
-                player.anims.play('left', true);
-
-                lastKey = 'left';
-            }
-            if (cursors.right.isDown)
-            {
-                player.setVelocityX(350);
-
-                player.anims.play('right', true);
-
-                lastKey = 'right';
-            }
-            if (cursors.right.isUp && lastKey == 'right')
-            {
-                player.setVelocityX(0);
-
-                player.anims.play('standingRight', true);
-            }
-            if (cursors.left.isUp && lastKey == 'left')
-            {
-                player.setVelocityX(0);
-
-                player.anims.play('standingLeft', true);
-            }
-
-            if (cursors.up.isDown && player.body.touching.down)
-            {
-                player.setVelocityY(-600);
-            }
-
-
-
-
     }
 }

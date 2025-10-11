@@ -1,3 +1,6 @@
+// import  Player  from '../global.js';
+
+
 var cursors;
 var player;
 var floor;
@@ -30,7 +33,7 @@ export class LadderTest extends Phaser.Scene {
 
     create() {
 
-        cursors = this.input.keyboard.createCursorKeys();
+        // cursors = this.input.keyboard.createCursorKeys();
 
         floor = this.physics.add.staticGroup();
         ladders = this.physics.add.staticGroup();
@@ -137,13 +140,15 @@ export class LadderTest extends Phaser.Scene {
 
         console.log(floor);
         
-        player = this.physics.add.sprite(300, 200, 'player').setScale(2).refreshBody();
-        // console.log(player);
+        // player = this.physics.add.sprite(300, 200, 'player').setScale(2).refreshBody();
+
+        this.player = new Player(this, 300, 200, 'player', customBounds);
+        console.log(this.player);
         
-        player.body.setGravityY(700);
+        // player.body.setGravityY(700);
         // player.setBounce(0.2);
-        player.setCollideWorldBounds(true);
-        player.body.setBoundsRectangle(customBounds);
+        // player.setCollideWorldBounds(true);
+        // player.body.setBoundsRectangle(customBounds);
 
         
         this.anims.create({
@@ -178,65 +183,64 @@ export class LadderTest extends Phaser.Scene {
             repeat: -1
         });
 
-        this.physics.add.collider(player, floor);
+        this.physics.add.collider(this.player, floor);
 
         this.cameras.main.setBounds(0, 0, world.width, world.height);
         
-        this.cameras.main.startFollow(player);
+        this.cameras.main.startFollow(this.player);
         this.cameras.main.setFollowOffset(0, 0);
         
     }
 
     update() {
-        player.setVelocityX(0);
+        
+        this.player.update();
+        // const touching = this.physics.overlap(player, ladders);
+        // if (!touching) {
+        //     onLadder = false;
+        //     player.body.setGravity(700);
+        // }else{
+        //     onLadder = true;
+        //     player.body.setGravity(0);
+        //     player.setVelocityY(0);
+        //     if(cursors.up.isDown){
+        //         player.setVelocityY(-150);
+        //     }
+        // }
 
-        const touching = this.physics.overlap(player, ladders);
-        if (!touching) {
-            onLadder = false;
-            player.body.setGravity(700);
-        }else{
-            onLadder = true;
-            player.body.setGravity(0);
-            player.setVelocityY(0);
-            if(cursors.up.isDown){
-                player.setVelocityY(-150);
-            }
-        }
-        console.log(onLadder);
+        // if (cursors.left.isDown)
+        // {
+        //     player.setVelocityX(-400);
 
-        if (cursors.left.isDown)
-        {
-            player.setVelocityX(-400);
+        //     player.anims.play('left', true);
 
-            player.anims.play('left', true);
+        //     lastKey = 'left';
+        // }
+        // if (cursors.right.isDown)
+        // {
+        //     player.setVelocityX(400);
 
-            lastKey = 'left';
-        }
-        if (cursors.right.isDown)
-        {
-            player.setVelocityX(400);
+        //     player.anims.play('right', true);
 
-            player.anims.play('right', true);
+        //     lastKey = 'right';
+        // }
+        // if (cursors.right.isUp && lastKey == 'right')
+        // {
+        //     player.setVelocityX(0);
 
-            lastKey = 'right';
-        }
-        if (cursors.right.isUp && lastKey == 'right')
-        {
-            player.setVelocityX(0);
+        //     player.anims.play('standingRight', true);
+        // }
+        // if (cursors.left.isUp && lastKey == 'left')
+        // {
+        //     player.setVelocityX(0);
 
-            player.anims.play('standingRight', true);
-        }
-        if (cursors.left.isUp && lastKey == 'left')
-        {
-            player.setVelocityX(0);
+        //     player.anims.play('standingLeft', true);
+        // }
 
-            player.anims.play('standingLeft', true);
-        }
-
-        if (cursors.up.isDown && player.body.touching.down)
-        {
-            player.setVelocityY(-600);
-        }
+        // if (cursors.up.isDown && player.body.touching.down)
+        // {
+        //     player.setVelocityY(-600);
+        // }
     }
     
 }
