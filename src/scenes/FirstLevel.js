@@ -1,12 +1,10 @@
-import { AddCustomBounds ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor } from '../global.js';
+import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor } from '../global.js';
 
-const world = {
-  width: 1194,
-  height: 1917
-};
 
-const customBounds = AddCustomBounds.create;
 
+
+// A changer, 1 = le numéro du niveau
+const customBounds = AddCustomBounds(1);
 
 export class FirstLevel extends Phaser.Scene{
 
@@ -23,7 +21,8 @@ export class FirstLevel extends Phaser.Scene{
     create(){
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.bg = this.add.tileSprite(0,0, world.width, world.height, 'background').setOrigin(0,0);
+        // A changer, 1 = le numéro du niveau
+        AddBg(this, 1);
 
         // Static Groups
         StaticGroups.create(this);
@@ -108,13 +107,13 @@ export class FirstLevel extends Phaser.Scene{
 
         placeOnGrid(this, 2, 1, 'lantern');
 
-        this.player = new Player(this, 300, 200, 'player', customBounds);
+        this.player = new Player(this, 270, 200, 'player', customBounds);
 
         CreateAnims.create(this);
 
         SetDefaultCollider.create(this);
 
-        SetCameras.create(this);
+        SetCameras.create(this, 1);
 
         HasTouchedFloor.create(this);
         }

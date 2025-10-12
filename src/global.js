@@ -2,12 +2,71 @@ export const Global = {
     gravity: 700,
     world : {
         width : 1194,
-        height : 1917
+        firstLvl :{
+            height : 1917  
+        },
+        secondLvl :{
+            height: 1886
+        },
+        thirdLvl :{
+            height : 1776
+        },
+        fourthLvl :{
+            height : 2126 
+        },
+        fifthLvl : {
+            height : 2154
+        }
+
     }
 };
 
-export const AddCustomBounds = {
-    create : new Phaser.Geom.Rectangle(0, 0, Global.world.width, Global.world.height)
+
+
+
+
+export function AddCustomBounds(level){
+    switch(level) {
+        case 1 :
+            return new Phaser.Geom.Rectangle(0, 0, Global.world.width, Global.world.firstLvl.height);
+
+        case 2 :
+            return new Phaser.Geom.Rectangle(0, 0, Global.world.width, Global.world.secondLvl.height);
+        
+        case 3 :
+            return new Phaser.Geom.Rectangle(0, 0, Global.world.width, Global.world.thirdLvl.height);
+
+        case 4 :
+            return new Phaser.Geom.Rectangle(0, 0, Global.world.width, Global.world.fourthLvl.height);
+        
+        case 5 :
+            return new Phaser.Geom.Rectangle(0, 0, Global.world.width, Global.world.fifthLvl.height);
+    }
+}
+
+
+
+
+
+export function AddBg(scene,level){
+    let lvlHeight;
+    switch(level) {
+        case 1 :
+            lvlHeight = Global.world.firstLvl.height;
+
+        case 2 :
+            lvlHeight = Global.world.secondLvl.height;
+        
+        case 3 :
+            lvlHeight = Global.world.thirdLvl.height;
+
+        case 4 :
+            lvlHeight = Global.world.fourthLvl.height;
+        
+        case 5 :
+            lvlHeight = Global.world.fifthLvl.height;
+    }
+    scene.bg = scene.add.tileSprite(0,0, Global.world.width, lvlHeight, 'background').setOrigin(0,0);
 }
 
 
@@ -209,7 +268,7 @@ export class SetDefaultCollider {
     
     static create(scene){
         scene.physics.add.collider(scene.player, scene.obstacles);
-        scene.physics.add.collider(scene.player, scene.walls);    
+        scene.physics.add.collider(scene.player, scene.walls);
     }
 }
 
@@ -218,10 +277,28 @@ export class SetDefaultCollider {
 
 
 export class SetCameras{
-    static create(scene){
-        scene.cameras.main.setBounds(0, 0, Global.world.width, Global.world.height);
+    static create(scene, level){
+        let lvlHeight;
+        switch(level) {
+        case 1 :
+            lvlHeight = Global.world.firstLvl.height;
+
+        case 2 :
+            lvlHeight = Global.world.secondLvl.height;
+        
+        case 3 :
+            lvlHeight = Global.world.thirdLvl.height;
+
+        case 4 :
+            lvlHeight = Global.world.fourthLvl.height;
+        
+        case 5 :
+            lvlHeight = Global.world.fifthLvl.height;
+    }
+
+        scene.cameras.main.setBounds(0, 0, Global.world.width, lvlHeight);
         scene.cameras.main.startFollow(scene.player);
-        scene.cameras.main.setFollowOffset(0, 0);
+        scene.cameras.main.setFollowOffset(0, 170);
     }
 }
 
