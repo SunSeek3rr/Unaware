@@ -81,6 +81,8 @@ export class Preload {
         scene.load.image('obstacle', 'assets/obstacle_block.png');
         scene.load.image('ladder', 'assets/ladder_block.png');
         scene.load.image('obstacle_small', 'assets/one_way_block.png');
+        scene.load.image('spikes', 'assets/spikes_block.png');
+        scene.load.image('obstacle_half', 'assets/obstacle_half_block.png');
         scene.load.spritesheet('player', 'assets/character_ilab.png', { frameWidth: 54, frameHeight: 59 });
         scene.load.spritesheet('lantern', 'assets/lantern_block.png', { frameWidth : 54, frameHeight : 54});
     }
@@ -98,6 +100,21 @@ export class StaticGroups {
     scene.walls = scene.physics.add.staticGroup();
     scene.ladders = scene.physics.add.staticGroup();
     scene.lanterns = scene.physics.add.staticGroup();
+    scene.spikes = scene.physics.add.staticGroup();
+    scene.lavas = scene.physics.add.staticGroup();
+    scene.halfObstacles = scene.physics.add.staticGroup();
+    }
+
+    static reset(scene){
+    scene.floor?.clear(true);
+    scene.obstacles?.clear(true);
+    scene.smallObstacles?.clear(true);
+    scene.walls?.clear(true);
+    scene.ladders?.clear(true);
+    scene.lanterns?.clear(true);
+    scene.spikes?.clear(true);
+    scene.lavas?.clear(true);
+    scene.halfObstacles?.clear(true);
     }
 }
 
@@ -121,6 +138,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     this.cursors = scene.input.keyboard.createCursorKeys();
+    scene.cursors = this.cursors;
+
     this.lastKey = 'right';
     this.scene = scene;
   }
@@ -196,7 +215,17 @@ export function placeOnGrid (scene, x, y, type, count){
             block = scene.smallObstacles.create(blockX, blockY, 'obstacle_small').setOrigin(0, 0);
             block.refreshBody();
             break;
+        
+        case 'obstacle_half_up' :
+            block = scene.halfObstacles.create(blockX, blockY, 'obstacle_half').setOrigin(0,0);
+            block.refreshBody();
+            break;
 
+        case 'obstacle_half_down' :
+            block = scene.halfObstacles.create(blockX, blockY, 'obstacle_half').setOrigin(0,-1);
+            block.refreshBody();
+            break;
+        
         case 'wall':
             block = scene.walls.create(blockX, blockY, 'obstacle').setOrigin(0, 0);
             block.refreshBody();
@@ -212,6 +241,16 @@ export function placeOnGrid (scene, x, y, type, count){
             block = scene.lanterns.create(blockX, blockY, 'lantern').setOrigin(0, 0).setScale(1.5);
             block.refreshBody();
             break;
+        
+        case 'spikes':
+            block = scene.spikes.create(blockX, blockY, 'spikes').setOrigin(0,-2.8);
+            block.refreshBody();
+            break;
+
+        case 'lava':
+            block = scene.lavas.create(blockX, blockY, 'lava').setOrigin(0, -2.8);
+            block.refreshBody();
+            break;
         }
 
     }
@@ -223,40 +262,52 @@ export function placeOnGrid (scene, x, y, type, count){
 
 export class CreateAnims {
     static create(scene){
-        scene.anims.create({
-            key: 'standingLeft',
-            frames: scene.anims.generateFrameNumbers('player', { start: 0, end: 1 }),
-            frameRate: 7,
-            repeat: -1
-        });
 
-        scene.anims.create({
-            key: 'standingRight',
-            frames: scene.anims.generateFrameNumbers('player', { start: 6, end:7 }),
-            frameRate: 7,
-            repeat: -1
-        });
+        if(!scene.anims.exists('standingLeft')){
+            scene.anims.create({
+                key: 'standingLeft',
+                frames: scene.anims.generateFrameNumbers('player', { start: 0, end: 1 }),
+                frameRate: 7,
+                repeat: -1
+            });
+        }
 
-        scene.anims.create({
-            key: 'left',
-            frames: scene.anims.generateFrameNumbers('player', { start: 2, end: 5 }),
-            frameRate: 10,
-            repeat: -1
-        });
+        if(!scene.anims.exists('standingRight')){
+            scene.anims.create({
+                key: 'standingRight',
+                frames: scene.anims.generateFrameNumbers('player', { start: 6, end:7 }),
+                frameRate: 7,
+                repeat: -1
+            });
 
-        scene.anims.create({
-            key: 'right',
-            frames: scene.anims.generateFrameNumbers('player', { start: 8, end:11 }),
-            frameRate: 10,
-            repeat: -1
-        });
+        }
+        if(!scene.anims.exists('left')){
+            scene.anims.create({
+                key: 'left',
+                frames: scene.anims.generateFrameNumbers('player', { start: 2, end: 5 }),
+                frameRate: 10,
+                repeat: -1
+            });
+            
+        }
+        if(!scene.anims.exists('right')){
+            scene.anims.create({
+                key: 'right',
+                frames: scene.anims.generateFrameNumbers('player', { start: 8, end:11 }),
+                frameRate: 10,
+                repeat: -1
+            });
+            
+        }
+        if(!scene.anims.exists('lantern')){
+            scene.anims.create({
+                key: 'lantern',
+                frames: scene.anims.generateFrameNumbers('lantern', { start: 0, end: 1 }),
+                frameRate: 7,
+                repeat: -1
+            });
 
-        scene.anims.create({
-            key: 'lantern',
-            frames: scene.anims.generateFrameNumbers('lantern', { start: 0, end: 1 }),
-            frameRate: 7,
-            repeat: -1
-        });
+        }
     }
 }
 
@@ -267,8 +318,15 @@ export class CreateAnims {
 export class SetDefaultCollider {
     
     static create(scene){
-        scene.physics.add.collider(scene.player, scene.obstacles);
-        scene.physics.add.collider(scene.player, scene.walls);
+        scene.defaultCollider = [];
+        
+        scene.defaultCollider.push(scene.physics.add.collider(scene.player, scene.obstacles));
+        scene.defaultCollider.push(scene.physics.add.collider(scene.player, scene.walls));
+    }
+
+    static reset(scene){
+        scene.defaultCollider.forEach(collider => collider.destroy());
+        scene.defaultCollider = [];   
     }
 }
 
@@ -348,6 +406,54 @@ export class HasTouchedFloor {
                     obstacle.body.checkCollision.up = true;
                 }
             });
+
+            scene.physics.add.collider(scene.player, scene.halfObstacles);
         }
+    }
+
+    static reset(scene){
+    scene.hasTouchedFloor = false;
+    }
+}
+
+export class HasTouchedRestartBlock {
+    static create(scene){
+        this.scene = scene;
+        scene.hasTouchedSpikes = false;
+        scene.hasTouchedLava = false
+        scene.hasRestarted = false;
+        
+        scene.physics.add.collider(scene.player, scene.spikes, ()=>{
+            scene.hasTouchedSpikes = true;
+        });
+
+        scene.physics.add.collider(scene.player, scene.lavas, ()=>{
+            scene.hasTouchedLava = true;
+        });
+
+    }
+    
+    static update(scene){ 
+        if((scene.hasTouchedSpikes || scene.hasTouchedLava) && !scene.hasRestarted){
+            SceneReset.resetAll(scene);
+            scene.scene.start(scene.scene.key);
+            scene.hasRestarted = true;
+        }
+    }
+
+    static reset(scene){
+        scene.hasTouchedSpikes = false;
+        scene.hasTouchedLava = false;
+        scene.hasRestarted = false;
+    }
+}
+
+
+class SceneReset{
+    static resetAll(scene){
+        HasTouchedRestartBlock.reset(scene);
+        StaticGroups.reset(scene);
+        SetDefaultCollider.reset(scene);
+        HasTouchedFloor.reset(scene);
     }
 }

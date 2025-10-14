@@ -6,10 +6,10 @@ import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnG
 // A changer, 1 = le numéro du niveau
 const customBounds = AddCustomBounds(1);
 
-export class templateScene extends Phaser.Scene{
+export class FourthLevel extends Phaser.Scene{
 
     constructor(){
-        super("templateScene");
+        super("FourthLevel");
     }
 
     preload(){

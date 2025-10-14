@@ -1,4 +1,4 @@
-import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor, HasTouchedRestartBlock } from '../global.js';
+import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor, HasTouchedSpikes } from '../global.js';
 
 
 
@@ -6,10 +6,10 @@ import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnG
 // A changer, 1 = le numéro du niveau
 const customBounds = AddCustomBounds(1);
 
-export class templateScene extends Phaser.Scene{
+export class spikesTest extends Phaser.Scene{
 
     constructor(){
-        super("templateScene");
+        super("spikesTest");
     }
 
     preload(){
@@ -28,7 +28,9 @@ export class templateScene extends Phaser.Scene{
 
 
         // Floor
-
+        
+        placeOnGrid(this, 0, 17, 'floor', 12);
+        placeOnGrid(this, 0, 16, 'floor' , 12);
 
         // Obstacles
 
@@ -49,6 +51,10 @@ export class templateScene extends Phaser.Scene{
 
         // Lanternes
 
+        // spikes
+
+        placeOnGrid(this, 5, 15, 'spikes');
+
 
         this.player = new Player(this, 270, 200, 'player', customBounds);
 
@@ -60,7 +66,8 @@ export class templateScene extends Phaser.Scene{
         SetCameras.create(this, 1);
 
         HasTouchedFloor.create(this);
-        HasTouchedRestartBlock.create(this);
+
+        HasTouchedSpikes.create(this);
         }
         
     
@@ -69,7 +76,7 @@ export class templateScene extends Phaser.Scene{
         this.player.update();
 
         HasTouchedFloor.update(this);
-        HasTouchedRestartBlock.update(this);
+        HasTouchedSpikes.update(this);
 
         this.lanterns.children.entries.forEach(lantern => {
             lantern.anims.play('lantern', true);

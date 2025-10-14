@@ -1,5 +1,9 @@
 // import { Start } from './scenes/Start.js';
 import { FirstLevel } from './scenes/firstLevel.js';
+import { SecondLevel } from './scenes/SecondLevel.js';
+import { ThirdLevel } from './scenes/thirdLevel.js';
+import { FourthLevel } from './scenes/fourthLevel.js';
+import { FifthLevel } from './scenes/FifthLevel.js';
 import { Global } from './global.js';
 // import { LadderTest } from './scenes/LadderTest.js'
 
@@ -16,7 +20,7 @@ const config = {
     },
     backgroundColor: '#ffffff',
     scene: [
-        FirstLevel
+        SecondLevel
     ]
 }
 
