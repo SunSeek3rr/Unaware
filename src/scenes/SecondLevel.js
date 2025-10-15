@@ -88,8 +88,8 @@ export class SecondLevel extends Phaser.Scene{
         // Lanternes
 
         // Spikes
-        placeOnGrid(this, 4, 6, 'spikes');
-        placeOnGrid(this, 6, 6, 'spikes');
+        placeOnGrid(this, 4, 6, 'spikes_down');
+        placeOnGrid(this, 6, 6, 'spikes_down');
         // Lava
 
 

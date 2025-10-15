@@ -23,8 +23,6 @@ export const Global = {
 
 
 
-
-
 export function AddCustomBounds(level){
     switch(level) {
         case 1 :
@@ -163,43 +161,50 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.setVelocityX(0);
 
     const touching = this.scene.physics.overlap(this, this.scene.ladders);
-
-    if (!touching) {
-      this.setGravityY(Global.gravity);
-    } else {
-      this.setGravityY(0);
-      this.setVelocityY(0);
-      if (this.cursors.up.isDown) {
-        this.setVelocityY(-300);
-      }
-      if (this.cursors.down.isDown) {
-        this.setVelocityY(300);
-      }
-    }
-
-    if (this.cursors.left.isDown) {
-      this.setVelocityX(-300);
-      this.anims.play('left', true);
-      this.lastKey = 'left';
-    } else if (this.cursors.right.isDown) {
-      this.setVelocityX(300);
-      this.anims.play('right', true);
-      this.lastKey = 'right';
-    }
-
     if (this.cursors.right.isUp && this.lastKey === 'right') {
       this.setVelocityX(0);
-      this.anims.play('standingRight', true);
+      if(!HasTouchedFloor.hasTouchedFloor){
+        this.anims.play('standingRight', false);
+
+      }else{
+        this.anims.play('standingRight', true);
+      }
     }
 
     if (this.cursors.left.isUp && this.lastKey === 'left') {
       this.setVelocityX(0);
       this.anims.play('standingLeft', true);
     }
-
-    if (this.cursors.up.isDown && this.body.touching.down) {
-      this.setVelocityY(-600);
+    if(HasTouchedFloor.hasTouchedFloor){
+        if (!touching) {
+          this.setGravityY(Global.gravity);
+        } else {
+          this.setGravityY(0);
+          this.setVelocityY(0);
+          if (this.cursors.up.isDown) {
+            this.setVelocityY(-300);
+          }
+          if (this.cursors.down.isDown) {
+            this.setVelocityY(300);
+          }
+        }
+        
+        if (this.cursors.left.isDown) {
+          this.setVelocityX(-300);
+          this.anims.play('left', true);
+          this.lastKey = 'left';
+        } else if (this.cursors.right.isDown) {
+          this.setVelocityX(300);
+          this.anims.play('right', true);
+          this.lastKey = 'right';
+        }
+    
+    
+        if (this.cursors.up.isDown && this.body.touching.down) {
+          this.setVelocityY(-600);
+        }
     }
+
   }
 }
 
@@ -257,8 +262,13 @@ export function placeOnGrid (scene, x, y, type, count){
             block.refreshBody();
             break;
         
-        case 'spikes':
+        case 'spikes_down':
             block = scene.spikes.create(blockX, blockY, 'spikes').setOrigin(0,-2.8);
+            block.refreshBody();
+            break;
+
+        case 'spikes_up':
+            block = scene.spikes.create(blockX, blockY, 'spikes').setOrigin(0,-0.9);
             block.refreshBody();
             break;
 
@@ -353,10 +363,18 @@ export class SetDefaultCollider {
     static create(scene){
         scene.defaultCollider = [];
         
-        scene.defaultCollider.push(scene.physics.add.collider(scene.player, scene.obstacles));
-        scene.defaultCollider.push(scene.physics.add.collider(scene.player, scene.walls));
     }
 
+    static update(scene){
+        
+        if(HasTouchedFloor.hasTouchedFloor){
+            if(scene.defaultCollider.length == 0){
+                scene.defaultCollider.push(scene.physics.add.collider(scene.player, scene.obstacles));
+                scene.defaultCollider.push(scene.physics.add.collider(scene.player, scene.walls));
+            }
+
+        }
+    }
     static reset(scene){
         scene.defaultCollider.forEach(collider => collider.destroy());
         scene.defaultCollider = [];   
@@ -407,18 +425,20 @@ export class SetCameras{
 
 
 export class HasTouchedFloor {
+    
+    static hasTouchedFloor = false;
+
     static create(scene){
-        
-        scene.hasTouchedFloor = false;
+        this.hasTouchedFloor = false;
 
         scene.physics.add.collider(scene.player, scene.floor, () => {
-            scene.hasTouchedFloor = true;
+            this.hasTouchedFloor = true;
         });    
     }
 
     static update(scene){
         
-        if (scene.hasTouchedFloor) {
+        if (this.hasTouchedFloor) {
             scene.smallObstacles.children.entries.forEach(obstacle => {
                 
                 const playerBottom = scene.player.body.y + scene.player.body.height;
@@ -454,7 +474,7 @@ export class HasTouchedFloor {
     }
 
     static reset(scene){
-    scene.hasTouchedFloor = false;
+    this.hasTouchedFloor = false;
     }
 }
 
@@ -464,19 +484,29 @@ export class HasTouchedRestartBlock {
         scene.hasTouchedSpikes = false;
         scene.hasTouchedLava = false;
         scene.hasRestarted = false;
+        scene.restartBlockColliders = [];
         
-        scene.physics.add.collider(scene.player, scene.spikes, ()=>{
-            scene.hasTouchedSpikes = true;
-        });
-
-        scene.physics.add.collider(scene.player, scene.lavas, ()=>{
-            scene.hasTouchedLava = true;
-            console.log('touché');
-        });
-
     }
     
     static update(scene){ 
+        if(HasTouchedFloor.hasTouchedFloor){
+
+            if(scene.restartBlockColliders.length == 0){
+                
+                scene.restartBlockColliders.push(
+                    scene.physics.add.collider(scene.player, scene.spikes, ()=>{
+                    scene.hasTouchedSpikes = true;
+                }));
+        
+                scene.restartBlockColliders.push(
+                    scene.physics.add.collider(scene.player, scene.lavas, ()=>{
+                    scene.hasTouchedLava = true;
+                }));
+            }
+            
+            
+    
+        }
         if((scene.hasTouchedSpikes || scene.hasTouchedLava) && !scene.hasRestarted){
             SceneReset.resetAll(scene);
             scene.scene.start(scene.scene.key);

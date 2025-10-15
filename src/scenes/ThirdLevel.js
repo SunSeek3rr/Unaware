@@ -111,8 +111,8 @@ export class ThirdLevel extends Phaser.Scene{
         // Lanternes
 
         // Spikes
-        placeOnGrid(this, 3, 7, 'spikes');
-        placeOnGrid(this, 6, 7, 'spikes');
+        placeOnGrid(this, 3, 7, 'spikes_down');
+        placeOnGrid(this, 6, 7, 'spikes_down');
 
         // Lava
         placeOnGrid(this, 4, 16, 'lava_up');
