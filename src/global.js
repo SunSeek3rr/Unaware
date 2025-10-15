@@ -29,18 +29,23 @@ export function AddCustomBounds(level){
     switch(level) {
         case 1 :
             return new Phaser.Geom.Rectangle(0, 0, Global.world.width, Global.world.firstLvl.height);
+            break;
 
         case 2 :
             return new Phaser.Geom.Rectangle(0, 0, Global.world.width, Global.world.secondLvl.height);
-        
+            break;
         case 3 :
             return new Phaser.Geom.Rectangle(0, 0, Global.world.width, Global.world.thirdLvl.height);
-
+            break;
         case 4 :
             return new Phaser.Geom.Rectangle(0, 0, Global.world.width, Global.world.fourthLvl.height);
-        
+            break;
         case 5 :
             return new Phaser.Geom.Rectangle(0, 0, Global.world.width, Global.world.fifthLvl.height);
+            break;
+        default :
+            console.log('default');
+            break;
     }
 }
 
@@ -53,18 +58,27 @@ export function AddBg(scene,level){
     switch(level) {
         case 1 :
             lvlHeight = Global.world.firstLvl.height;
+            break;
 
         case 2 :
             lvlHeight = Global.world.secondLvl.height;
+            break;
         
         case 3 :
             lvlHeight = Global.world.thirdLvl.height;
+            break;
 
         case 4 :
             lvlHeight = Global.world.fourthLvl.height;
+            break;
         
         case 5 :
             lvlHeight = Global.world.fifthLvl.height;
+            break;
+
+        default :
+            console.log('default');
+            break;
     }
     scene.bg = scene.add.tileSprite(0,0, Global.world.width, lvlHeight, 'background').setOrigin(0,0);
 }
@@ -83,6 +97,7 @@ export class Preload {
         scene.load.image('obstacle_small', 'assets/one_way_block.png');
         scene.load.image('spikes', 'assets/spikes_block.png');
         scene.load.image('obstacle_half', 'assets/obstacle_half_block.png');
+        scene.load.spritesheet('lava', 'assets/lava_block.png', {frameWidth : 54, frameHeight : 28});
         scene.load.spritesheet('player', 'assets/character_ilab.png', { frameWidth: 54, frameHeight: 59 });
         scene.load.spritesheet('lantern', 'assets/lantern_block.png', { frameWidth : 54, frameHeight : 54});
     }
@@ -247,9 +262,18 @@ export function placeOnGrid (scene, x, y, type, count){
             block.refreshBody();
             break;
 
-        case 'lava':
-            block = scene.lavas.create(blockX, blockY, 'lava').setOrigin(0, -2.8);
+        case 'lava_up':
+            block = scene.lavas.create(blockX, blockY, 'lava').setOrigin(0,0).setScale(2);
             block.refreshBody();
+            break;
+        
+        case 'lava_down':
+            block = scene.lavas.create(blockX, blockY, 'lava').setOrigin(0,-0.95).setScale(2);
+            block.refreshBody();
+            break;
+
+        default :
+            console.log('default');
             break;
         }
 
@@ -308,6 +332,15 @@ export class CreateAnims {
             });
 
         }
+        if(!scene.anims.exists('lava')){
+            scene.anims.create({
+                key : 'lava',
+                frames : scene.anims.generateFrameNumbers('lava', {
+                start : 0, end : 2}),
+                frameRate : 7,
+                repeat : -1
+            });
+        }
     }
 }
 
@@ -340,23 +373,32 @@ export class SetCameras{
         switch(level) {
         case 1 :
             lvlHeight = Global.world.firstLvl.height;
+            break;
 
         case 2 :
             lvlHeight = Global.world.secondLvl.height;
+            break;
         
         case 3 :
             lvlHeight = Global.world.thirdLvl.height;
+            break;
 
         case 4 :
             lvlHeight = Global.world.fourthLvl.height;
+            break;
         
         case 5 :
             lvlHeight = Global.world.fifthLvl.height;
+            break;
+
+        default :
+            console.log('default');
+            break;
     }
 
         scene.cameras.main.setBounds(0, 0, Global.world.width, lvlHeight);
         scene.cameras.main.startFollow(scene.player);
-        scene.cameras.main.setFollowOffset(0, 170);
+        scene.cameras.main.setFollowOffset(0, 0);
     }
 }
 
@@ -420,7 +462,7 @@ export class HasTouchedRestartBlock {
     static create(scene){
         this.scene = scene;
         scene.hasTouchedSpikes = false;
-        scene.hasTouchedLava = false
+        scene.hasTouchedLava = false;
         scene.hasRestarted = false;
         
         scene.physics.add.collider(scene.player, scene.spikes, ()=>{
@@ -429,6 +471,7 @@ export class HasTouchedRestartBlock {
 
         scene.physics.add.collider(scene.player, scene.lavas, ()=>{
             scene.hasTouchedLava = true;
+            console.log('touché');
         });
 
     }

@@ -4,7 +4,7 @@ import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnG
 
 
 // A changer, 1 = le numéro du niveau
-const customBounds = AddCustomBounds(1);
+const customBounds = AddCustomBounds(5);
 
 export class FifthLevel extends Phaser.Scene{
 
@@ -21,7 +21,7 @@ export class FifthLevel extends Phaser.Scene{
     create(){
 
         // A changer, 1 = le numéro du niveau
-        AddBg(this, 1);
+        AddBg(this, 5);
 
         // Static Groups
         StaticGroups.create(this);
@@ -57,7 +57,7 @@ export class FifthLevel extends Phaser.Scene{
         SetDefaultCollider.create(this);
 
         // A changer, 1 = le numéro du niveau
-        SetCameras.create(this, 1);
+        SetCameras.create(this, 5);
 
         HasTouchedFloor.create(this);
         HasTouchedRestartBlock.create(this);

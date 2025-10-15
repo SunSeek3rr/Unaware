@@ -20,7 +20,7 @@ const config = {
     },
     backgroundColor: '#ffffff',
     scene: [
-        SecondLevel
+        ThirdLevel
     ]
 }
 
