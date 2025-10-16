@@ -15,12 +15,12 @@ const config = {
         default: 'arcade',
         arcade:{
             gravity : { y: Global.gravity},
-            debug : true
+            debug : false
         }
     },
     backgroundColor: '#ffffff',
     scene: [
-        FourthLevel
+        FirstLevel, SecondLevel, ThirdLevel, FourthLevel, FifthLevel
     ]
 }
 

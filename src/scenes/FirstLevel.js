@@ -1,4 +1,4 @@
-import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor, HasTouchedRestartBlock } from '../global.js';
+import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor, HasTouchedRestartBlock, Teleport } from '../global.js';
 
 
 
@@ -122,6 +122,8 @@ export class FirstLevel extends Phaser.Scene{
 
         HasTouchedRestartBlock.create(this);
 
+        Teleport.create(this);
+
         // this.lanterns.children.entries.forEach((lantern)=>{
         //     lantern.preFX.addGlow('0xFFFFFF', 2, 5);
         // });
@@ -131,10 +133,13 @@ export class FirstLevel extends Phaser.Scene{
     
     update() {
         this.player.update();
+        Teleport.update(this, 1);
         
 
         HasTouchedFloor.update(this);
         HasTouchedRestartBlock.update(this);
+        SetDefaultCollider.update(this);
+
 
         this.lanterns.children.entries.forEach(lantern => {
             lantern.anims.play('lantern', true);

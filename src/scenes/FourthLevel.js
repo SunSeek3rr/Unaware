@@ -1,4 +1,4 @@
-import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor, HasTouchedRestartBlock } from '../global.js';
+import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor, HasTouchedRestartBlock, Teleport } from '../global.js';
 
 
 
@@ -47,7 +47,10 @@ export class FourthLevel extends Phaser.Scene{
         placeOnGrid(this, 3, 9, 'obstacle');
         placeOnGrid(this, 5, 9, 'obstacle', 7);
 
-        // placeOnGrid(this, )
+        placeOnGrid(this, 8, 6, 'obstacle');
+        placeOnGrid(this, 6, 6, 'obstacle');
+
+        placeOnGrid(this, 5, 5, 'obstacle');
 
         // Small Obstacles
         placeOnGrid(this, 10, 17, 'obstacle_small');
@@ -67,29 +70,49 @@ export class FourthLevel extends Phaser.Scene{
         placeOnGrid(this, 10, 7, 'obstacle_small');
 
         placeOnGrid(this, 9, 6, 'obstacle_small');
+        
+        placeOnGrid(this, 4, 3, 'obstacle_small');
+        placeOnGrid(this, 6, 3, 'obstacle_small');
 
         // Half Obstacles
         placeOnGrid(this, 3, 13, 'obstacle_half_down');
 
         placeOnGrid(this, 4, 9, 'obstacle_half_down');
 
+        placeOnGrid(this, 7, 6, 'obstacle_half_down'),
+        placeOnGrid(this, 3, 6, 'obstacle_half_up', 6);
+
+
         // Walls & upperFloor
 
             // Left
+            placeOnGrid(this, 0, 5, 'wall', 4);
+            placeOnGrid(this, 0, 4, 'wall', 3);
 
+            placeOnGrid(this, 0, 3, 'wall');
+            placeOnGrid(this, 0, 2, 'wall');
+
+            placeOnGrid(this, 0, 0, 'wall', 4);
 
             // Right
-
+            placeOnGrid(this, 8, 3, 'wall', 12);
         
         // Ladder
         placeOnGrid(this, 10, 8, 'ladder', 12);
         placeOnGrid(this, 10, 7, 'ladder', 12);
+
+        placeOnGrid(this, 10, 2, 'ladder', 12);
+        placeOnGrid(this, 10, 1, 'ladder', 12);
+        placeOnGrid(this, 10, 0, 'ladder', 12);
 
         // Lanternes
 
         // Spikes
         placeOnGrid(this, 3, 13, 'spikes_up');
         placeOnGrid(this, 4, 9, 'spikes_up');
+
+        placeOnGrid(this, 7, 6, 'spikes_up');
+        placeOnGrid(this, 4, 5, 'spikes_down');
 
         // Lave
         placeOnGrid(this, 4, 19, 'lava_down');
@@ -106,16 +129,20 @@ export class FourthLevel extends Phaser.Scene{
 
         HasTouchedFloor.create(this);
         HasTouchedRestartBlock.create(this);
+
+        Teleport.create(this);
         }
         
     
     
     update() {
         this.player.update();
+        Teleport.update(this, 4);
 
         HasTouchedFloor.update(this);
         SetDefaultCollider.update(this);
         HasTouchedRestartBlock.update(this);
+
 
         this.lanterns.children.entries.forEach(lantern => {
             lantern.anims.play('lantern', true);

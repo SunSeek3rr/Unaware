@@ -1,4 +1,4 @@
-import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor, HasTouchedRestartBlock } from '../global.js';
+import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor, HasTouchedRestartBlock, Teleport } from '../global.js';
 
 
 
@@ -130,14 +130,20 @@ export class ThirdLevel extends Phaser.Scene{
 
         HasTouchedFloor.create(this);
         HasTouchedRestartBlock.create(this);
+
+        Teleport.create(this);
         }
         
         
         update() {
         this.player.update();
+        Teleport.update(this, 3);
             
         HasTouchedFloor.update(this);
         HasTouchedRestartBlock.update(this);
+
+        SetDefaultCollider.update(this);
+        
 
 
         this.lanterns.children.entries.forEach(lantern => {

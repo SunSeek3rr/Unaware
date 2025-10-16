@@ -530,3 +530,53 @@ class SceneReset{
         HasTouchedFloor.reset(scene);
     }
 }
+
+export class Teleport{
+    static create(scene){
+        this.scene = scene;
+
+        this.player = this.scene.player;
+        this.teleportX = Global.world.width;
+        this.teleportY = 0;
+
+        this.tolerance = 108;
+    }
+    
+    static update(scene, actualLevel){
+        let nextLevel;
+        if(HasTouchedFloor.hasTouchedFloor){
+            if(
+                this.player.x >= this.teleportX - this.tolerance &&
+                this.player.y <= this.teleportY + this.tolerance/2
+            ){
+                switch(actualLevel){
+                    case 1 :
+                        nextLevel = 'SecondLevel';
+                        break;
+
+                    case 2 :
+                        nextLevel = 'ThirdLevel';
+                        break;
+                    
+                    case 3 :
+                        nextLevel = 'FourthLevel';
+                        break;
+
+                    case 4 :
+                        nextLevel = 'FifthLevel';
+                        break;
+                    
+                    case 5 :
+                        nextLevel = 'FirstLevel';
+                        break;
+
+                    default :
+                        console.log('default');
+                        break;
+                }
+                scene.scene.start(nextLevel);
+            }
+        }
+        
+    }
+}

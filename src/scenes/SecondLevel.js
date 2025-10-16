@@ -1,4 +1,4 @@
-import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor, HasTouchedRestartBlock } from '../global.js';
+import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor, HasTouchedRestartBlock, Teleport } from '../global.js';
 
 
 
@@ -70,12 +70,12 @@ export class SecondLevel extends Phaser.Scene{
                 placeOnGrid(this, 0, 9, 'wall');
     
             // Right
-                placeOnGrid(this, 8, 3, 'obstacle', 12);
-                placeOnGrid(this, 8, 4, 'obstacle', 12);
-                placeOnGrid(this, 8, 5, 'obstacle');
+                placeOnGrid(this, 8, 3, 'wall', 12);
+                placeOnGrid(this, 8, 4, 'wall', 12);
+                placeOnGrid(this, 8, 5, 'wall');
 
-                placeOnGrid(this, 10, 8, 'obstacle');
-                placeOnGrid(this, 8, 9, 'obstacle', 12);
+                placeOnGrid(this, 10, 8, 'wall');
+                placeOnGrid(this, 8, 9, 'wall', 12);
         
         // Ladder
         placeOnGrid(this, 0, 8, 'ladder');
@@ -104,15 +104,21 @@ export class SecondLevel extends Phaser.Scene{
 
         HasTouchedFloor.create(this);
         HasTouchedRestartBlock.create(this);
+
+        Teleport.create(this);
         }
         
     
     
     update() {
         this.player.update();
+        Teleport.update(this, 2);
 
         HasTouchedFloor.update(this);
         HasTouchedRestartBlock.update(this);
+        SetDefaultCollider.update(this);
+
+
 
         this.lanterns.children.entries.forEach(lantern => {
             lantern.anims.play('lantern', true);
