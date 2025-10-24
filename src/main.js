@@ -1,4 +1,4 @@
-// import { Start } from './scenes/Start.js';
+import { Start } from './scenes/Start.js';
 import { FirstLevel } from './scenes/firstLevel.js';
 import { SecondLevel } from './scenes/SecondLevel.js';
 import { ThirdLevel } from './scenes/thirdLevel.js';

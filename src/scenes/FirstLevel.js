@@ -1,4 +1,4 @@
-import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor, HasTouchedRestartBlock, Teleport } from '../global.js';
+import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor, HasTouchedRestartBlock, Teleport, flyingMobs } from '../global.js';
 
 
 
@@ -108,11 +108,11 @@ export class FirstLevel extends Phaser.Scene{
         placeOnGrid(this, 2, 1, 'lantern');
 
         // Spikes
-
-
+        CreateAnims.create(this);
+        
+        this.mob = new flyingMobs(this, -108, Global.world.firstLvl.height - 532, 'bat-green', 'bat-left');
         this.player = new Player(this, 170, 200, 'player', customBounds);
 
-        CreateAnims.create(this);
 
         SetDefaultCollider.create(this);
 
@@ -129,7 +129,15 @@ export class FirstLevel extends Phaser.Scene{
         // });
         }
         
-    
+        // On veut faire en sorte de créer des éléments perturbateurs qui passent devant l'écran s'ils volent, ou marchent sur le sol.
+        // Need : 
+        // - Load sprites
+        // - Anims
+        // - if(moving){Velocity XY if(positionX < 0 || positionY < 0 || positionX > width || positionY > height) / if('' && collider.walls)}
+        // - if(volant){ spawnY = <50% spawnX = width + spriteSize || 0 - spriteSize}
+        // if(marche){ spawnY = floor.base || wall.base spawnX= ''}
+
+        // Le but est de créer un monstre à part entière afin de généraliser certaines partie du code et de pouvoir switch entre les types via une fonction interne
     
     update() {
         this.player.update();
@@ -139,6 +147,8 @@ export class FirstLevel extends Phaser.Scene{
         HasTouchedFloor.update(this);
         HasTouchedRestartBlock.update(this);
         SetDefaultCollider.update(this);
+
+        this.mob.update(this);
 
 
         this.lanterns.children.entries.forEach(lantern => {
