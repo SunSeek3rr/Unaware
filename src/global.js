@@ -93,7 +93,7 @@ export function AddBg(scene,level){
             console.log('default');
             break;
     }
-    console.log(level);
+
     if(level == 0){
         scene.bg = scene.add.sprite(0,0, 'background-ext');
         scene.bg.setOrigin(0,0);
@@ -721,12 +721,12 @@ export class Teleport{
         if(HasTouchedFloor.hasTouchedFloor){
             if(this.player.x >= this.teleportX - this.tolerance && this.player.y <= this.teleportY + this.tolerance){
                 if(this.start){
-                    SceneReset.resetAll(this.scene);
                     scene.scene.start('FirstLevel');
+                    SceneReset.resetAll(this.scene);
                 }   
                 else{
-                    SceneReset.resetAll(this.scene);
                     scene.scene.start('questionRoom');
+                    SceneReset.resetAll(this.scene);
                 }
             }
 
@@ -736,27 +736,29 @@ export class Teleport{
     }
 // Etapes : echelle -> salle de question -> tpNextLvl
 //  
-export class TeleportToNext {
-    static create(scene){
-        this.scene = scene;
+// export class TeleportToNext {
+//     static create(scene){
+//         this.scene = scene;
 
 
-        this.scene.nextStringLvl;
-        switch(this.scene.nextLvl){
-            case 2:
-                this.scene.nextStringLvl = 'SecondLevel';
-                break;
-        }
-    }
-    static update(scene){
-        SceneReset.resetAll(this);
-        scene.scene.start(this.scene.nextStringLvl);
-    }
-}
+//         this.scene.nextStringLvl;
+//         switch(this.scene.nextLvl){
+//             case 2:
+//                 this.scene.nextStringLvl = 'SecondLevel';
+//                 break;
+//         }
+//     }
+//     static update(scene){
+//         SceneReset.resetAll(this);
+//         scene.scene.start(this.scene.nextStringLvl);
+//     }
+// }
 
 export class QuestionRoom{
     static create(scene){
         this.scene = scene;
+
+        this.triggered = false;
         
         this.scene.doors.children.entries.forEach((door, i) => {
             this.scene.physics.add.overlap(this.scene.player, door, () => {

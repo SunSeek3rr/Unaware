@@ -31,7 +31,6 @@ export class questionRoom extends Phaser.Scene{
 
         // Floor
         placeOnGrid(this, 0, 7, 'floor', 10);
-        placeOnGrid(this, 0, 8, )
 
         // Obstacles
 
