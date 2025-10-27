@@ -1,4 +1,4 @@
-import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor, HasTouchedRestartBlock, Teleport, flyingMobs } from '../global.js';
+import { Global, AddCustomBounds, AddBg ,Preload, StaticGroups, Player, placeOnGrid, CreateAnims ,SetDefaultCollider, SetCameras, HasTouchedFloor, HasTouchedRestartBlock, Teleport, flyingMobs, QuestionRoom } from '../global.js';
 
 
 
@@ -108,10 +108,10 @@ export class FirstLevel extends Phaser.Scene{
         placeOnGrid(this, 2, 1, 'lantern');
 
         // Spikes
-        CreateAnims.create(this);
+        CreateAnims.create(this, 'bat-green');
         
-        this.mob = new flyingMobs(this, -108, Global.world.firstLvl.height - 532, 'bat-green', 'bat-left');
-        this.player = new Player(this, 170, 200, 'player', customBounds);
+        this.mob = new flyingMobs(this, -108, Global.world.firstLvl.height - 532, 'bat-green', 'bat-left-green');
+        this.player = new Player(this, 170, (16*108) - 54, 'player', customBounds);
 
 
         SetDefaultCollider.create(this);
@@ -122,37 +122,42 @@ export class FirstLevel extends Phaser.Scene{
 
         HasTouchedRestartBlock.create(this);
 
+        // this.nxtString = 'SecondLevel';
+        // this.lastString = 'FirstLevel';
         Teleport.create(this);
 
         // this.lanterns.children.entries.forEach((lantern)=>{
-        //     lantern.preFX.addGlow('0xFFFFFF', 2, 5);
+            //     lantern.preFX.addGlow('0xFFFFFF', 2, 5);
         // });
-        }
-        
-        // On veut faire en sorte de créer des éléments perturbateurs qui passent devant l'écran s'ils volent, ou marchent sur le sol.
-        // Need : 
-        // - Load sprites
-        // - Anims
-        // - if(moving){Velocity XY if(positionX < 0 || positionY < 0 || positionX > width || positionY > height) / if('' && collider.walls)}
-        // - if(volant){ spawnY = <50% spawnX = width + spriteSize || 0 - spriteSize}
-        // if(marche){ spawnY = floor.base || wall.base spawnX= ''}
-
-        // Le but est de créer un monstre à part entière afin de généraliser certaines partie du code et de pouvoir switch entre les types via une fonction interne
+    }
+    
+    // On veut faire en sorte de créer des éléments perturbateurs qui passent devant l'écran s'ils volent, ou marchent sur le sol.
+    // Need : 
+    // - Load sprites
+    // - Anims
+    // - if(moving){Velocity XY if(positionX < 0 || positionY < 0 || positionX > width || positionY > height) / if('' && collider.walls)}
+    // - if(volant){ spawnY = <50% spawnX = width + spriteSize || 0 - spriteSize}
+    // if(marche){ spawnY = floor.base || wall.base spawnX= ''}
+    
+    // Le but est de créer un monstre à part entière afin de généraliser certaines partie du code et de pouvoir switch entre les types via une fonction interne
     
     update() {
         this.player.update();
-        Teleport.update(this, 1);
         
-
+        Global.lastString = 'FirstLevel';
+        Global.nextString = 'SecondLevel';
+        
         HasTouchedFloor.update(this);
         HasTouchedRestartBlock.update(this);
         SetDefaultCollider.update(this);
-
+        
         this.mob.update(this);
-
-
+        
+        
         this.lanterns.children.entries.forEach(lantern => {
             lantern.anims.play('lantern', true);
         });
+        // QuestionRoom.update(this);
+        Teleport.update(this);
     }
 }

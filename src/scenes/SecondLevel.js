@@ -104,19 +104,25 @@ export class SecondLevel extends Phaser.Scene{
 
         HasTouchedFloor.create(this);
         HasTouchedRestartBlock.create(this);
-
-        Teleport.create(this);
-        }
         
+        Teleport.create(this);
+    }
+    
     
     
     update() {
-        this.player.update();
-        Teleport.update(this, 2);
+        console.log(Global.lastString);
 
+        Global.lastString = 'SecondLevel';
+        Global.nextString = 'ThirdLevel';
+        this.player.update();
+        
         HasTouchedFloor.update(this);
         HasTouchedRestartBlock.update(this);
         SetDefaultCollider.update(this);
+        
+        // QuestionRoom.update(this);
+         Teleport.update(this);
 
 
 

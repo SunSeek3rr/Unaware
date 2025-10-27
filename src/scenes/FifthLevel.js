@@ -136,24 +136,30 @@ export class FifthLevel extends Phaser.Scene{
         HasTouchedFloor.create(this);
         HasTouchedRestartBlock.create(this);
 
+        
         Teleport.create(this);
+        // QuestionRoom.create(scene, this.nxtString);
         }
         
     
     
     update() {
         this.player.update();
-        Teleport.update(this, 5);
-
+        
         SetDefaultCollider.update(this);
         HasTouchedFloor.update(this);
         HasTouchedRestartBlock.update(this);
         
-
+        Global.lastString = 'FifthLevel';
+        Global.nextString = 'End';
+        
         this.lanterns.children.entries.forEach(lantern => {
             lantern.anims.play('lantern', true);
         });
-
+        
         this.lavas.children.entries.forEach(lava => lava.anims.play('lava', true));
+        
+        // QuestionRoom.update(this);
+        Teleport.update(this);
     }
 }

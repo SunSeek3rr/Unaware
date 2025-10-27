@@ -1,5 +1,7 @@
 export const Global = {
     gravity: 700,
+    lastString : '',
+    nextString : '',
     world : {
         width : 1194,
         start : {
@@ -83,7 +85,9 @@ export function AddBg(scene,level){
             lvlHeight = Global.world.fifthLvl.height;
             break;
 
-        case 6 : lvlHeight = Global.world.start.height;
+        case 6 : 
+            lvlHeight = Global.world.start.height;
+            break;
 
         default :
             console.log('default');
@@ -91,7 +95,7 @@ export function AddBg(scene,level){
     }
     console.log(level);
     if(level == 0){
-        scene.bg = scene.add.image(0,0, 'background-ext');
+        scene.bg = scene.add.sprite(0,0, 'background-ext');
         scene.bg.setOrigin(0,0);
         
     }else{
@@ -107,20 +111,31 @@ export class Preload {
     static create(scene){
         
         scene.load.image('floor', 'assets/obstacle_block.png');
+        scene.load.image('floor-banner', 'assets/banner_block.png');
         scene.load.image('grass', 'assets/grass_block.png');
         scene.load.image('dirt', 'assets/dirt_block.png');
         scene.load.image('tower', 'assets/tower_ext.png');
         scene.load.image('background', 'assets/bg_block.png');
+        scene.load.image('door', 'assets/door_question.png');
         scene.load.image('background-ext', 'assets/background-ext.png');
         scene.load.image('obstacle', 'assets/obstacle_block.png');
         scene.load.image('ladder', 'assets/ladder_block.png');
         scene.load.image('obstacle_small', 'assets/one_way_block.png');
         scene.load.image('spikes', 'assets/spikes_block.png');
         scene.load.image('obstacle_half', 'assets/obstacle_half_block.png');
+        scene.load.image('gold', 'assets/gold_coins.png');
         scene.load.spritesheet('lava', 'assets/lava_block.png', {frameWidth : 54, frameHeight : 28});
         scene.load.spritesheet('player', 'assets/character_ilab.png', { frameWidth: 81.40, frameHeight: 89 });
         scene.load.spritesheet('lantern', 'assets/lantern_block.png', { frameWidth : 54, frameHeight : 54});
+
+        scene.load.spritesheet('orb', 'assets/magic_orb.png', {
+            frameWidth : 108, frameHeight: 108
+        });
         
+        scene.load.spritesheet('snake', 'assets/pnj_snake.png', {
+            frameWidth : 64, frameHeight : 64
+        });
+
         scene.load.spritesheet('bat-green', 'assets/bat-green.png', {
             frameWidth : 108, frameHeight : 108});
         scene.load.spritesheet('bat-red', 'assets/bat-red.png', {
@@ -180,6 +195,9 @@ export class StaticGroups {
     scene.spikes = scene.physics.add.staticGroup();
     scene.lavas = scene.physics.add.staticGroup();
     scene.halfObstacles = scene.physics.add.staticGroup();
+    scene.gold = scene.physics.add.staticGroup();
+    scene.orb = scene.physics.add.staticGroup();
+    scene.doors = scene.physics.add.staticGroup();
     }
 
     static reset(scene){
@@ -192,6 +210,9 @@ export class StaticGroups {
     scene.spikes?.clear(true);
     scene.lavas?.clear(true);
     scene.halfObstacles?.clear(true);
+    scene.gold?.clear(true);
+    scene.orb?.clear(true);
+    scene.doors?.clear(true);
     }
 }
 
@@ -361,8 +382,38 @@ export function placeOnGrid (scene, x, y, type, count){
             break;
 
         case 'tower' :
-            block = scene.add.image(0,0, 'tower');
+            block = scene.add.sprite(blockX,blockY, 'tower');
             block.setOrigin(0,0);
+
+        case 'floor-banner' :
+            block = scene.floor.create(blockX, blockY, 'floor-banner').setOrigin(0,0);
+            block.refreshBody();
+            break;
+        
+        case 'background' : 
+            block = scene.add.image(blockX, blockY, 'background').setOrigin(0,0);
+            block.refreshBody();    
+            break;
+
+        case 'gold' :
+            block = scene.gold.create(blockX, blockY, 'gold').setOrigin(0,0);
+            block.refreshBody();
+            break;
+
+        case 'orb' :
+            block = scene.orb.create(blockX, blockY, 'orb').setOrigin(0,0);
+            block.refreshBody();
+            break;
+
+        case 'door' :
+            block = scene.doors.create(blockX, blockY, 'door').setOrigin(0,0).setScale(2);
+            block.refreshBody();
+            break;
+
+        case 'snake' :
+            block = scene.add.sprite(blockX, blockY, 'snake').setOrigin(0,0).setScale(2);
+            block.flipX = true;
+            break;
 
         default :
             console.log('default');
@@ -378,6 +429,7 @@ export function placeOnGrid (scene, x, y, type, count){
 
 export class CreateAnims {
     static create(scene){
+        
 
         if(!scene.anims.exists('standingLeft')){
             scene.anims.create({
@@ -434,10 +486,30 @@ export class CreateAnims {
             });
         }
 
-        if(!scene.anims.exists('bat-left')){
+        if(!scene.anims.exists('bat-left-green')){
             scene.anims.create({
-                key : 'bat-left',
+                key : 'bat-left-green',
                 frames : scene.anims.generateFrameNumbers('bat-green', {
+                start : 0, end : 1}),
+                frameRate : 7,
+                repeat : -1
+            });
+        }
+
+        if(!scene.anims.exists('bat-right-green')){
+            scene.anims.create({
+                key : 'bat-right-green',
+                frames : scene.anims.generateFrameNumbers('bat-green', {
+                start : 2, end : 3}),
+                frameRate : 7,
+                repeat : -1
+            });
+        }
+
+        if(!scene.anims.exists('orb')){
+            scene.anims.create({
+                key : 'orb',
+                frames : scene.anims.generateFrameNumbers('orb', {
                 start : 0, end : 1}),
                 frameRate : 7,
                 repeat : -1
@@ -627,53 +699,80 @@ class SceneReset{
 }
 
 export class Teleport{
-    static create(scene){
+    static create(scene, start, x, y){
         this.scene = scene;
-
+        if(start && x && y){
+            this.teleportX = x * 108;
+            this.teleportY = y * 108;
+            this.tolerance = 0;
+            this.start = true;
+        }else{
+            this.teleportX = Global.world.width;
+            this.teleportY = 0;
+            this.tolerance = 108;
+            this.start = false;
+            
+        }
+        
         this.player = this.scene.player;
-        this.teleportX = Global.world.width;
-        this.teleportY = 0;
-
-        this.tolerance = 108;
     }
     
-    static update(scene, actualLevel){
-        let nextLevel;
+    static update(scene, question){
         if(HasTouchedFloor.hasTouchedFloor){
-            if(
-                this.player.x >= this.teleportX - this.tolerance &&
-                this.player.y <= this.teleportY + this.tolerance/2
-            ){
-                switch(actualLevel){
-                    case 1 :
-                        nextLevel = 'SecondLevel';
-                        break;
-
-                    case 2 :
-                        nextLevel = 'ThirdLevel';
-                        break;
-                    
-                    case 3 :
-                        nextLevel = 'FourthLevel';
-                        break;
-
-                    case 4 :
-                        nextLevel = 'FifthLevel';
-                        break;
-                    
-                    case 5 :
-                        nextLevel = 'FirstLevel';
-                        break;
-
-                    default :
-                        console.log('default');
-                        break;
+            if(this.player.x >= this.teleportX - this.tolerance && this.player.y <= this.teleportY + this.tolerance){
+                if(this.start){
+                    SceneReset.resetAll(this.scene);
+                    scene.scene.start('FirstLevel');
+                }   
+                else{
+                    SceneReset.resetAll(this.scene);
+                    scene.scene.start('questionRoom');
                 }
-                scene.scene.start(nextLevel);
+            }
+
             }
         }
         
     }
+// Etapes : echelle -> salle de question -> tpNextLvl
+//  
+export class TeleportToNext {
+    static create(scene){
+        this.scene = scene;
+
+
+        this.scene.nextStringLvl;
+        switch(this.scene.nextLvl){
+            case 2:
+                this.scene.nextStringLvl = 'SecondLevel';
+                break;
+        }
+    }
+    static update(scene){
+        SceneReset.resetAll(this);
+        scene.scene.start(this.scene.nextStringLvl);
+    }
+}
+
+export class QuestionRoom{
+    static create(scene){
+        this.scene = scene;
+        
+        this.scene.doors.children.entries.forEach((door, i) => {
+            this.scene.physics.add.overlap(this.scene.player, door, () => {
+                if (this.scene.cursors.up.isDown && !this.triggered) {
+                    this.triggered = true;
+
+                    SceneReset.resetAll(this.scene);
+                    
+                    const targetScene = i === 0 ? Global.nextString : Global.lastString;
+                    scene.scene.start(targetScene);
+                }
+            });
+        });
+                
+    }
+
 }
 
 
@@ -689,25 +788,22 @@ export class flyingMobs extends Phaser.GameObjects.Sprite{
         this.speed = 0.012;
 
         
-
+        console.log(mobType);
         switch(mobType){
-            case 'bat-left' :
-                this.animKey = 'bat-left' ;
+            case 'bat-left-green' :
+                this.animKey = 'bat-left-green' ;
                 break;
 
             default :
             console.log('mobDefault');
             break;
         }
-        if(this.animKey){
-            this.anims.play(this.animKey, true);
-
-        }
         this.speedX = 2;
     }
-
+    
     preUpdate(time, delta, index){
         super.preUpdate(time, delta);
+
 
         this.time += delta;
         
@@ -720,12 +816,12 @@ export class flyingMobs extends Phaser.GameObjects.Sprite{
         this.x += this.speedX;
         if(this.x + this.width / 2 >= (Global.world.width + 108) ){
             this.speedX = -Math.abs(this.speedX);
+            this.anims.play('bat-left-green');
         }
         if(this.x - this.width / 2 <= -108){
             this.speedX = Math.abs(this.speedX);
+            this.anims.play('bat-right-green');
         }
-        // while(!(this.x > -110) && !(this.x <= Global.world.width + 108)){
-        //     this.x -= 10;
-        // }
+        
     }
 }

@@ -131,25 +131,30 @@ export class ThirdLevel extends Phaser.Scene{
         HasTouchedFloor.create(this);
         HasTouchedRestartBlock.create(this);
 
+        this.nxtString = 'FourthLevel';
         Teleport.create(this);
         }
         
         
         update() {
         this.player.update();
-        Teleport.update(this, 3);
-            
+        
         HasTouchedFloor.update(this);
         HasTouchedRestartBlock.update(this);
-
-        SetDefaultCollider.update(this);
         
+        SetDefaultCollider.update(this);
 
-
+        Global.lastString = 'ThirdLevel';
+        Global.nextString = 'FourthLevel';
+        
+        
+        
         this.lanterns.children.entries.forEach(lantern => {
             lantern.anims.play('lantern', true);
         });
-
+        
         this.lavas.children.entries.forEach(lava => lava.anims.play('lava', true));
+        // QuestionRoom.update(this);
+        Teleport.update(this);
     }
 }

@@ -1,10 +1,12 @@
+import { End } from './scenes/End.js';
+import { questionRoom } from './scenes/questionRoom.js'
 import { Start } from './scenes/Start.js';
-import { FirstLevel } from './scenes/firstLevel.js';
+import { FirstLevel } from './scenes/FirstLevel.js';
 import { SecondLevel } from './scenes/SecondLevel.js';
-import { ThirdLevel } from './scenes/thirdLevel.js';
-import { FourthLevel } from './scenes/fourthLevel.js';
+import { ThirdLevel } from './scenes/ThirdLevel.js';
+import { FourthLevel } from './scenes/FourthLevel.js';
 import { FifthLevel } from './scenes/FifthLevel.js';
-import { Global } from './global.js';
+import { Global, QuestionRoom } from './global.js';
 // import { LadderTest } from './scenes/LadderTest.js'
 
 const config = {
@@ -20,7 +22,7 @@ const config = {
     },
     backgroundColor: '#ffffff',
     scene: [
-        FirstLevel, SecondLevel, ThirdLevel, FourthLevel, FifthLevel
+        Start,FirstLevel, SecondLevel, ThirdLevel, FourthLevel, FifthLevel, End, questionRoom
     ]
 }
 

@@ -137,16 +137,20 @@ export class FourthLevel extends Phaser.Scene{
     
     update() {
         this.player.update();
-        Teleport.update(this, 4);
-
+        
         HasTouchedFloor.update(this);
         SetDefaultCollider.update(this);
         HasTouchedRestartBlock.update(this);
 
-
+        Global.lastString = 'FourthLevel';
+        Global.nextString = 'FifthLevel';
+        
+        
         this.lanterns.children.entries.forEach(lantern => {
             lantern.anims.play('lantern', true);
         });
         this.lavas.children.entries.forEach(lava => lava.anims.play('lava', true));
+        // QuestionRoom.update(this);
+        Teleport.update(this);
     }
 }
