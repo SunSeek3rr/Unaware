@@ -123,7 +123,8 @@ export class Preload {
         scene.load.image('obstacle_small', 'assets/one_way_block.png');
         scene.load.image('spikes', 'assets/spikes_block.png');
         scene.load.image('obstacle_half', 'assets/obstacle_half_block.png');
-        scene.load.image('gold', 'assets/gold_coins.png');
+        scene.load.spritesheet('gold', 'assets/gold_coins.png',
+            { frameWidth : 108, frameHeight : 108 });
         scene.load.spritesheet('lava', 'assets/lava_block.png', {frameWidth : 54, frameHeight : 28});
         scene.load.spritesheet('player', 'assets/character_ilab.png', { frameWidth: 81.40, frameHeight: 89 });
         scene.load.spritesheet('lantern', 'assets/lantern_block.png', { frameWidth : 54, frameHeight : 54});
@@ -515,6 +516,16 @@ export class CreateAnims {
                 repeat : -1
             });
         }
+
+        if(!scene.anims.exists('gold')){
+            scene.anims.create({
+                key : 'gold',
+                frames : scene.anims.generateFrameNumbers('gold', {
+                start : 0, end : 2}),
+                frameRate : 7,
+                repeat : -1
+            });
+        }
     }
 }
 
@@ -721,12 +732,12 @@ export class Teleport{
         if(HasTouchedFloor.hasTouchedFloor){
             if(this.player.x >= this.teleportX - this.tolerance && this.player.y <= this.teleportY + this.tolerance){
                 if(this.start){
-                    scene.scene.start('FirstLevel');
                     SceneReset.resetAll(this.scene);
+                    scene.scene.start('FirstLevel');
                 }   
                 else{
-                    scene.scene.start('questionRoom');
                     SceneReset.resetAll(this.scene);
+                    scene.scene.start('questionRoom');
                 }
             }
 
@@ -769,12 +780,15 @@ export class QuestionRoom{
                     
                     const targetScene = i === 0 ? Global.nextString : Global.lastString;
                     scene.scene.start(targetScene);
+                    this.triggered = false;
                 }
             });
         });
                 
     }
 
+    // dans l'ordre : portes nxtLvl : 3, 2, 1, 3, 1;
+    // dans l'ordre : elPerturb : 4:1, 5:2, 3:3, 4:4, 2:5;
 }
 
 

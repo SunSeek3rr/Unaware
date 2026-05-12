@@ -46,6 +46,24 @@ export class End extends Phaser.Scene{
         
         // Ladder
 
+        //Golds
+        placeOnGrid(this, 1, 6, 'gold');
+        // placeOnGrid(this, 4, 6, 'gold');
+        placeOnGrid(this, 7, 6, 'gold');
+        
+        
+        this.goldScaled = this.gold.create(108 * 5, 108 * 5, 'gold').setScale(2).setOrigin(0,0);
+        this.goldScaled.refreshBody();
+
+        this.goldScaled2 = this.gold.create(108 * 10, 108 * 5, 'gold').setScale(2).setOrigin(0,0);
+        this.goldScaled2.refreshBody();
+
+        this.goldScaled3 = this.gold.create(108 * 2, 108 * 6.5, 'gold').setScale(0.5).setOrigin(0,0);
+        this.goldScaled3.refreshBody();
+
+        placeOnGrid(this, 5, 6, 'gold');
+        placeOnGrid(this, 6, 6, 'gold');
+        placeOnGrid(this, 9, 6, 'gold');
 
         // Lanternes
         placeOnGrid(this, 2, 3, 'lantern');
@@ -67,9 +85,7 @@ export class End extends Phaser.Scene{
         HasTouchedRestartBlock.create(this);
 
         // Teleport.create(this, 'start', 8 , 5);
-        }
-        
-    
+    }
     
     update() {
         this.player.update();
@@ -83,6 +99,10 @@ export class End extends Phaser.Scene{
         });
         this.orb.children.entries.forEach(orb => {
             orb.anims.play('orb', true);
+        });
+
+        this.gold.children.entries.forEach(gold => {
+            gold.anims.play('gold', true);
         });
     }
 }

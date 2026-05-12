@@ -25,7 +25,7 @@ export class Start extends Phaser.Scene{
         // Static Groups
         StaticGroups.create(this);
 
-        placeOnGrid(this, 7, -1.8, 'tower');
+        placeOnGrid(this, 7.1, -1.8, 'tower');
         // Floor
         placeOnGrid(this, 0, 6, 'grass', 12);
         placeOnGrid(this, 0, 7, 'dirt', 12);
@@ -62,7 +62,7 @@ export class Start extends Phaser.Scene{
         HasTouchedFloor.create(this);
         HasTouchedRestartBlock.create(this);
 
-        Teleport.create(this, 'start', 8 , 6);
+        Teleport.create(this, 'start', 8.5 , 6);
         }
         
     

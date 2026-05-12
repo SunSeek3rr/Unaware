@@ -57,7 +57,7 @@ export class questionRoom extends Phaser.Scene{
         // Mob
         placeOnGrid(this, 7, 5.82, 'snake');
 
-        this.player = new Player(this, 270, 200, 'player', customBounds);
+        this.player = new Player(this, 1000, 200, 'player', customBounds);
 
         CreateAnims.create(this);
 
@@ -70,13 +70,13 @@ export class questionRoom extends Phaser.Scene{
         HasTouchedRestartBlock.create(this);
 
         QuestionRoom.create(this);
-
-        }
-        
+    }
+    
     
     
     update() {
         this.player.update();
+        this.player.lastKey = 'left';
 
         HasTouchedFloor.update(this);
         HasTouchedRestartBlock.update(this);
