@@ -55,7 +55,23 @@ export class questionRoom extends Phaser.Scene{
         // Lanternes
         
         // Mob
-        placeOnGrid(this, 7, 5.82, 'snake');
+        switch(Global.lastString){
+            case 'FirstLevel' :
+                placeOnGrid(this, 7, 5.82, 'axolotl');
+                break;
+            case 'SecondLevel' : 
+                placeOnGrid(this, 7, 5.82, 'dog');
+                break;
+            case 'ThirdLevel' :
+                placeOnGrid(this, 7, 5.82, 'frog');
+                break;
+            case 'FourthLevel' : 
+                placeOnGrid(this, 7, 5.82, 'snake');
+                break;
+            case 'FifthLevel' : 
+                placeOnGrid(this, 7, 5.82, 'snowman');
+                break;
+        }
 
         this.player = new Player(this, 1000, 200, 'player', customBounds);
 
@@ -85,5 +101,33 @@ export class questionRoom extends Phaser.Scene{
         this.lanterns.children.entries.forEach(lantern => {
             lantern.anims.play('lantern', true);
         });
+
+        switch(Global.lastString){
+            case 'FirstLevel' :
+                this.characters.children.entries.forEach(char => {
+                    char.anims.play('axolotl', true);
+                });
+                break;
+            case 'SecondLevel' : 
+                this.characters.children.entries.forEach(char => {
+                    char.anims.play('dog', true);
+                });
+                break;
+            case 'ThirdLevel' :
+                this.characters.children.entries.forEach(char => {
+                    char.anims.play('frog', true);
+                });
+                break;
+            case 'FourthLevel' : 
+                this.characters.children.entries.forEach(char => {
+                    char.anims.play('snake', true);
+                });
+                break;
+            case 'FifthLevel' : 
+                this.characters.children.entries.forEach(char => {
+                    char.anims.play('snowman', true);
+                });
+                break;
+        }
     }
 }

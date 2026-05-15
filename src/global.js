@@ -133,7 +133,19 @@ export class Preload {
             frameWidth : 108, frameHeight: 108
         });
         
+        scene.load.spritesheet('axolotl', 'assets/pnj_axolotl.png', {
+            frameWidth : 64, frameHeight : 64
+        });
+        scene.load.spritesheet('dog', 'assets/pnj_dog.png', {
+            frameWidth : 64, frameHeight : 64
+        });
+        scene.load.spritesheet('frog', 'assets/pnj_frog.png', {
+            frameWidth : 64, frameHeight : 64
+        });
         scene.load.spritesheet('snake', 'assets/pnj_snake.png', {
+            frameWidth : 64, frameHeight : 64
+        });
+        scene.load.spritesheet('snowman', 'assets/pnj_snowman.png', {
             frameWidth : 64, frameHeight : 64
         });
 
@@ -187,33 +199,35 @@ export class Preload {
 
 export class StaticGroups {
     static create(scene){
-    scene.floor = scene.physics.add.staticGroup();
-    scene.obstacles = scene.physics.add.staticGroup();
-    scene.smallObstacles = scene.physics.add.staticGroup();
-    scene.walls = scene.physics.add.staticGroup();
-    scene.ladders = scene.physics.add.staticGroup();
-    scene.lanterns = scene.physics.add.staticGroup();
-    scene.spikes = scene.physics.add.staticGroup();
-    scene.lavas = scene.physics.add.staticGroup();
-    scene.halfObstacles = scene.physics.add.staticGroup();
-    scene.gold = scene.physics.add.staticGroup();
-    scene.orb = scene.physics.add.staticGroup();
-    scene.doors = scene.physics.add.staticGroup();
+        scene.floor = scene.physics.add.staticGroup();
+        scene.obstacles = scene.physics.add.staticGroup();
+        scene.smallObstacles = scene.physics.add.staticGroup();
+        scene.walls = scene.physics.add.staticGroup();
+        scene.ladders = scene.physics.add.staticGroup();
+        scene.lanterns = scene.physics.add.staticGroup();
+        scene.spikes = scene.physics.add.staticGroup();
+        scene.lavas = scene.physics.add.staticGroup();
+        scene.halfObstacles = scene.physics.add.staticGroup();
+        scene.gold = scene.physics.add.staticGroup();
+        scene.orb = scene.physics.add.staticGroup();
+        scene.doors = scene.physics.add.staticGroup();
+        scene.characters = scene.physics.add.staticGroup();
     }
 
     static reset(scene){
-    scene.floor?.clear(true);
-    scene.obstacles?.clear(true);
-    scene.smallObstacles?.clear(true);
-    scene.walls?.clear(true);
-    scene.ladders?.clear(true);
-    scene.lanterns?.clear(true);
-    scene.spikes?.clear(true);
-    scene.lavas?.clear(true);
-    scene.halfObstacles?.clear(true);
-    scene.gold?.clear(true);
-    scene.orb?.clear(true);
-    scene.doors?.clear(true);
+        scene.floor?.clear(true);
+        scene.obstacles?.clear(true);
+        scene.smallObstacles?.clear(true);
+        scene.walls?.clear(true);
+        scene.ladders?.clear(true);
+        scene.lanterns?.clear(true);
+        scene.spikes?.clear(true);
+        scene.lavas?.clear(true);
+        scene.halfObstacles?.clear(true);
+        scene.gold?.clear(true);
+        scene.orb?.clear(true);
+        scene.doors?.clear(true);
+        scene.characters?.clear(true);
     }
 }
 
@@ -411,11 +425,31 @@ export function placeOnGrid (scene, x, y, type, count){
             block.refreshBody();
             break;
 
-        case 'snake' :
-            block = scene.add.sprite(blockX, blockY, 'snake').setOrigin(0,0).setScale(2);
+        case 'axolotl' :
+            block = scene.characters.create(blockX, blockY, 'axolotl').setOrigin(0,0).setScale(2);
+            block.flipX = true;
+            break;
+        
+        case 'dog' :
+            block = scene.characters.create(blockX, blockY, 'dog').setOrigin(0,0).setScale(2);
             block.flipX = true;
             break;
 
+        case 'frog' :
+            block = scene.characters.create(blockX, blockY, 'frog').setOrigin(0,0).setScale(2);
+            block.flipX = true;
+            break;
+        
+        case 'snake' :
+            block = scene.characters.create(blockX, blockY, 'snake').setOrigin(0,0).setScale(2);
+            block.flipX = true;
+            break;
+        
+        case 'snowman' :
+            block = scene.characters.create(blockX, blockY, 'snowman').setOrigin(0,0).setScale(2);
+            block.flipX = true;
+            break;
+        
         default :
             console.log('default');
             break;
@@ -522,6 +556,56 @@ export class CreateAnims {
                 key : 'gold',
                 frames : scene.anims.generateFrameNumbers('gold', {
                 start : 0, end : 2}),
+                frameRate : 7,
+                repeat : -1
+            });
+        }
+
+        if(!scene.anims.exists('axolotl')){
+            scene.anims.create({
+                key : 'axolotl',
+                frames : scene.anims.generateFrameNumbers('axolotl', {
+                start : 0, end : 1}),
+                frameRate : 7,
+                repeat : -1
+            });
+        }
+
+        if(!scene.anims.exists('dog')){
+            scene.anims.create({
+                key : 'dog',
+                frames : scene.anims.generateFrameNumbers('dog', {
+                start : 0, end : 1}),
+                frameRate : 7,
+                repeat : -1
+            });
+        }
+
+        if(!scene.anims.exists('frog')){
+            scene.anims.create({
+                key : 'frog',
+                frames : scene.anims.generateFrameNumbers('frog', {
+                start : 0, end : 1}),
+                frameRate : 7,
+                repeat : -1
+            });
+        }
+
+        if(!scene.anims.exists('snake')){
+            scene.anims.create({
+                key : 'snake',
+                frames : scene.anims.generateFrameNumbers('snake', {
+                start : 0, end : 1}),
+                frameRate : 7,
+                repeat : -1
+            });
+        }
+
+        if(!scene.anims.exists('snowman')){
+            scene.anims.create({
+                key : 'snowman',
+                frames : scene.anims.generateFrameNumbers('snowman', {
+                start : 0, end : 1}),
                 frameRate : 7,
                 repeat : -1
             });
@@ -775,10 +859,28 @@ export class QuestionRoom{
             this.scene.physics.add.overlap(this.scene.player, door, () => {
                 if (this.scene.cursors.up.isDown && !this.triggered) {
                     this.triggered = true;
-
+                    
                     SceneReset.resetAll(this.scene);
                     
-                    const targetScene = i === 0 ? Global.nextString : Global.lastString;
+                    let targetScene;
+                    switch(Global.lastString){
+                        case 'FirstLevel' :
+                            targetScene = i === 2 ? Global.nextString : Global.lastString;
+                            break;
+                        case 'SecondLevel' : 
+                            targetScene = i === 1 ? Global.nextString : Global.lastString;
+                            break;
+                        case 'ThirdLevel' :
+                            targetScene = i === 0 ? Global.nextString : Global.lastString;
+                            break;
+                        case 'FourthLevel' : 
+                            targetScene = i === 2 ? Global.nextString : Global.lastString;
+                            break;
+                        case 'FifthLevel' : 
+                            targetScene = i === 0 ? Global.nextString : Global.lastString;
+                            break;
+                    }
+
                     scene.scene.start(targetScene);
                     this.triggered = false;
                 }
@@ -787,7 +889,7 @@ export class QuestionRoom{
                 
     }
 
-    // dans l'ordre : portes nxtLvl : 3, 2, 1, 3, 1;
+    // dans l'ordre : portes nxtLvl : 2, 1, 0, 2, 0;
     // dans l'ordre : elPerturb : 4:1, 5:2, 3:3, 4:4, 2:5;
 }
 
