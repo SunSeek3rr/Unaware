@@ -13,6 +13,10 @@ const config = {
     type: Phaser.AUTO,
     width: 1194,
     height: 834,
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
     physics:{
         default: 'arcade',
         arcade:{
@@ -20,11 +24,21 @@ const config = {
             debug : false
         }
     },
-    backgroundColor: '#ffffff',
+    parent: 'game-container',
+    backgroundColor: '#040218',
+    pixelArt: true,
+    antialias: true,
     scene: [
         Start,FirstLevel, SecondLevel, ThirdLevel, FourthLevel, FifthLevel, End, questionRoom
     ]
 }
 
-new Phaser.Game(config);
+const launchGame = (e) => {
+    if(e.key === 'm') {
+        new Phaser.Game(config);
+        window.removeEventListener('keydown', launchGame);
+    }
+};
+
+window.addEventListener('keydown', launchGame);
             

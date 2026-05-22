@@ -40,6 +40,15 @@
                 color: inherit;
             }
 
+            #game-container.loading canvas {
+                opacity: 0;
+            }
+
+            canvas {
+                /* Transition fluide pour éviter une coupure brutale */
+                transition: opacity 0.2s ease; 
+            }
+
             .doorConfirm {
                 display: flex;
                 justify-content: center;
@@ -56,9 +65,9 @@
         </style>
     </head>
     <body>
-        <div id="game-container"></div>
+        <div id="game-container" class="loading"></div>
+        <div class="doorConfirm">Are you sure ? (press arrowUp to confirm, and arrowLeft to go back)</div>
         <script src="./phaser.js"></script>
         <script type="module" src="./src/main.js"></script>
-        <div class="doorConfirm">Are you sure ? (press arrowUp to confirm, and arrowLeft to go back)</div>
     </body>
     </html>

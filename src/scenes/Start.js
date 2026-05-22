@@ -19,6 +19,11 @@ export class Start extends Phaser.Scene{
 
     create(){
 
+        const container = document.getElementById('game-container');
+        if (container) {
+            container.classList.remove('loading');
+        }
+
         // A changer, 1 = le numéro du niveau
         AddBg(this, 0);
 
