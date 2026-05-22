@@ -33,9 +33,11 @@ const config = {
     ]
 }
 
+export let game;
+
 const launchGame = (e) => {
     if(e.key === 'm') {
-        new Phaser.Game(config);
+        game = new Phaser.Game(config);
         window.removeEventListener('keydown', launchGame);
     }
 };

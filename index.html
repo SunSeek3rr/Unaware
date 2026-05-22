@@ -62,11 +62,56 @@
                 left: calc(1194px/2 - 150px);
                 color: white;
             }
+
+            .question {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                position: absolute;
+                bottom: 200px;
+                left: calc((7 * 108px) + 54px);
+                padding: 24px;
+                background-color: white;
+                border: 2px solid black;
+                opacity: 0;
+                /* transition: opacity .05s ease-in; */
+
+                &::after {
+                    display: block;
+                    content: "";
+                    background-color: white;
+                    outline: 2px solid black;
+                    width: 40px;
+                    height: 22px;
+                    position: relative;
+                    bottom: -36px;
+                    left: calc(50% - 20px);
+
+                    clip-path: polygon(50% 100%, 1% 0, 100% 0);
+                }
+            }
+
+            .answers {
+                display: flex;
+                gap: 24px;
+            }
         </style>
     </head>
     <body>
         <div id="game-container" class="loading"></div>
         <div class="doorConfirm">Are you sure ? (press arrowUp to confirm, and arrowLeft to go back)</div>
+        <div class="question question--1">
+            <p>Combien y avait il de chauves souris vertes ?</p>
+            <div class="answers">
+                <p>Porte 1 : 4</p>
+                <p>Porte 2 : 6</p>
+                <p>Porte 3 : 5</p>
+            </div>
+        </div>
+        <p class="question question--2"></p>
+        <p class="question question--3"></p>
+        <p class="question question--4"></p>
+        <p class="question question--5"></p>
         <script src="./phaser.js"></script>
         <script type="module" src="./src/main.js"></script>
     </body>

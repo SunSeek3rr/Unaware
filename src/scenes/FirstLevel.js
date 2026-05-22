@@ -110,7 +110,24 @@ export class FirstLevel extends Phaser.Scene{
         // Spikes
         CreateAnims.create(this, 'bat-green');
         
-        this.mob = new flyingMobs(this, -108, Global.world.firstLvl.height - 532, 'bat-green', 'bat-left-green');
+        // Question : Combien y-avait t-il de chauves souris vertes ?
+        // Mobs (good answer -> 5 -> porte 3)
+        this.mob = new flyingMobs(this, -108, Global.world.firstLvl.height - 532, 'bat-green', 30, 1.3, 0.007);
+
+        this.mob = new flyingMobs(this, -108, Global.world.firstLvl.height - 332, 'bat-green', 50, 2, 0.012);
+        
+        this.mob = new flyingMobs(this, -108, Global.world.firstLvl.height - 300, 'bat-green', 30, 1.5, 0.008);
+
+        this.mob = new flyingMobs(this, -108, Global.world.firstLvl.height - 272, 'bat-green', 50, 1.8, 0.005);
+
+        this.mob = new flyingMobs(this, -108, Global.world.firstLvl.height - 432, 'bat-green', 30, 1.1, 0.006);
+
+        // this.mob = new flyingMobs(this, -108, Global.world.firstLvl.height - 372, 'bat-green', 50, 2.2, 0.014);
+        
+        // this.mob = new flyingMobs(this, -108, Global.world.firstLvl.height - 292, 'bat-green', 30, 1.6, 0.004);
+
+        // this.mob = new flyingMobs(this, -108, Global.world.firstLvl.height - 272, 'bat-green', 50, 1.4, 0.009);
+
         this.player = new Player(this, 170, (16*108) - 54, 'player', customBounds);
 
 
@@ -122,24 +139,11 @@ export class FirstLevel extends Phaser.Scene{
 
         HasTouchedRestartBlock.create(this);
 
-        // this.nxtString = 'SecondLevel';
-        // this.lastString = 'FirstLevel';
         Teleport.create(this);
 
-        // this.lanterns.children.entries.forEach((lantern)=>{
-            //     lantern.preFX.addGlow('0xFFFFFF', 2, 5);
-        // });
     }
     
-    // On veut faire en sorte de créer des éléments perturbateurs qui passent devant l'écran s'ils volent, ou marchent sur le sol.
-    // Need : 
-    // - Load sprites
-    // - Anims
-    // - if(moving){Velocity XY if(positionX < 0 || positionY < 0 || positionX > width || positionY > height) / if('' && collider.walls)}
-    // - if(volant){ spawnY = <50% spawnX = width + spriteSize || 0 - spriteSize}
-    // if(marche){ spawnY = floor.base || wall.base spawnX= ''}
     
-    // Le but est de créer un monstre à part entière afin de généraliser certaines partie du code et de pouvoir switch entre les types via une fonction interne
     
     update() {
         this.player.update();

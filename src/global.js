@@ -1,3 +1,5 @@
+import { game } from './main.js';
+
 export const Global = {
     gravity: 700,
     lastString : '',
@@ -541,6 +543,46 @@ export class CreateAnims {
             });
         }
 
+        if(!scene.anims.exists('bat-left-orange')){
+            scene.anims.create({
+                key : 'bat-left-orange',
+                frames : scene.anims.generateFrameNumbers('bat-orange', {
+                start : 0, end : 1}),
+                frameRate : 7,
+                repeat : -1
+            });
+        }
+
+        if(!scene.anims.exists('bat-right-orange')){
+            scene.anims.create({
+                key : 'bat-right-orange',
+                frames : scene.anims.generateFrameNumbers('bat-orange', {
+                start : 2, end : 3}),
+                frameRate : 7,
+                repeat : -1
+            });
+        }
+
+        if(!scene.anims.exists('bat-left-red')){
+            scene.anims.create({
+                key : 'bat-left-red',
+                frames : scene.anims.generateFrameNumbers('bat-red', {
+                start : 0, end : 1}),
+                frameRate : 7,
+                repeat : -1
+            });
+        }
+
+        if(!scene.anims.exists('bat-right-red')){
+            scene.anims.create({
+                key : 'bat-right-red',
+                frames : scene.anims.generateFrameNumbers('bat-red', {
+                start : 2, end : 3}),
+                frameRate : 7,
+                repeat : -1
+            });
+        }
+
         if(!scene.anims.exists('orb')){
             scene.anims.create({
                 key : 'orb',
@@ -850,39 +892,64 @@ export class Teleport{
 // }
 
 export class QuestionRoom{
+    
     static create(scene){
         this.scene = scene;
-
+        this.stepConfirmation = 0;
+        this.lastDoorInteracted = null;
         this.triggered = false;
+
+        this.questionNumber = scene.questionNumber;
+        console.log(this.questionNumber);
+        this.question = document.querySelector(`.question--${this.questionNumber}`);
+
+        this.question.style.opacity = 1;
         
+
         this.scene.doors.children.entries.forEach((door, i) => {
             this.scene.physics.add.overlap(this.scene.player, door, () => {
-                if (this.scene.cursors.up.isDown && !this.triggered) {
-                    this.triggered = true;
+                
+                if (Phaser.Input.Keyboard.JustDown(this.scene.cursors.up)) {
                     
-                    SceneReset.resetAll(this.scene);
+                    if (this.stepConfirmation === 0 || this.lastDoorInteracted !== i) {
+                        this.stepConfirmation = 1;
+                        this.lastDoorInteracted = i;
+                        
+                        console.log(`door ${i} selected`);
+                        
+                    } 
                     
-                    let targetScene;
-                    switch(Global.lastString){
-                        case 'FirstLevel' :
-                            targetScene = i === 2 ? Global.nextString : Global.lastString;
-                            break;
-                        case 'SecondLevel' : 
-                            targetScene = i === 1 ? Global.nextString : Global.lastString;
-                            break;
-                        case 'ThirdLevel' :
-                            targetScene = i === 0 ? Global.nextString : Global.lastString;
-                            break;
-                        case 'FourthLevel' : 
-                            targetScene = i === 2 ? Global.nextString : Global.lastString;
-                            break;
-                        case 'FifthLevel' : 
-                            targetScene = i === 0 ? Global.nextString : Global.lastString;
-                            break;
-                    }
+                    else if (this.stepConfirmation === 1 && this.lastDoorInteracted === i) {
+                        
+                        console.log(`door ${i} confirmed`);
+                        
+                        this.stepConfirmation = 0;
+                        this.lastDoorInteracted = null;
 
-                    scene.scene.start(targetScene);
-                    this.triggered = false;
+                        SceneReset.resetAll(this.scene);
+                        if (this.question) this.question.style.opacity = 0;
+                        
+                        let targetScene;
+                        switch(Global.lastString){
+                            case 'FirstLevel' :
+                                targetScene = i === 2 ? Global.nextString : Global.lastString;
+                                break;
+                            case 'SecondLevel' : 
+                                targetScene = i === 1 ? Global.nextString : Global.lastString;
+                                break;
+                            case 'ThirdLevel' :
+                                targetScene = i === 0 ? Global.nextString : Global.lastString;
+                                break;
+                            case 'FourthLevel' : 
+                                targetScene = i === 2 ? Global.nextString : Global.lastString;
+                                break;
+                            case 'FifthLevel' : 
+                                targetScene = i === 0 ? Global.nextString : Global.lastString;
+                                break;
+                        }
+                        
+                        this.scene.scene.start(targetScene);
+                    }
                 }
             });
         });
@@ -895,28 +962,42 @@ export class QuestionRoom{
 
 
 export class flyingMobs extends Phaser.GameObjects.Sprite{
-    constructor(scene, x, y, texture, mobType){
+    constructor(scene, x, y, texture, amplitude, speedX, globalSpeed){
         super(scene, x, y, texture);
         
         scene.add.existing(this);
 
         this.baseY = y;
         this.time = 0;
-        this.amplitude = 50;
-        this.speed = 0.012;
+        // this.amplitude = 50;
+        // this.speed = 0.012;
+        this.amplitude = amplitude;
+        this.speed = globalSpeed;
 
         
-        console.log(mobType);
-        switch(mobType){
-            case 'bat-left-green' :
-                this.animKey = 'bat-left-green' ;
+        // console.log(mobType);
+        console.log('texture');
+        switch(texture){
+            case 'bat-green' :
+                this.leftAnimKey = 'bat-left-green';
+                this.rightAnimKey = 'bat-right-green';
+                break;
+
+            case 'bat-orange' :
+                this.leftAnimKey = 'bat-left-orange';
+                this.rightAnimKey = 'bat-right-orange';
+                break;
+
+            case 'bat-red' :
+                this.leftAnimKey = 'bat-left-red';
+                this.rightAnimKey = 'bat-right-red';
                 break;
 
             default :
             console.log('mobDefault');
             break;
         }
-        this.speedX = 2;
+        this.speedX = speedX;
     }
     
     preUpdate(time, delta, index){
@@ -934,11 +1015,11 @@ export class flyingMobs extends Phaser.GameObjects.Sprite{
         this.x += this.speedX;
         if(this.x + this.width / 2 >= (Global.world.width + 108) ){
             this.speedX = -Math.abs(this.speedX);
-            this.anims.play('bat-left-green');
+            this.anims.play(this.leftAnimKey);
         }
         if(this.x - this.width / 2 <= -108){
             this.speedX = Math.abs(this.speedX);
-            this.anims.play('bat-right-green');
+            this.anims.play(this.rightAnimKey);
         }
         
     }

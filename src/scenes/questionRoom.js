@@ -58,18 +58,23 @@ export class questionRoom extends Phaser.Scene{
         switch(Global.lastString){
             case 'FirstLevel' :
                 placeOnGrid(this, 7, 5.82, 'axolotl');
+                this.questionNumber = 1;
                 break;
             case 'SecondLevel' : 
                 placeOnGrid(this, 7, 5.82, 'dog');
+                this.questionNumber = 2;
                 break;
             case 'ThirdLevel' :
                 placeOnGrid(this, 7, 5.82, 'frog');
+                this.questionNumber = 3;
                 break;
             case 'FourthLevel' : 
                 placeOnGrid(this, 7, 5.82, 'snake');
+                this.questionNumber = 4;
                 break;
             case 'FifthLevel' : 
                 placeOnGrid(this, 7, 5.82, 'snowman');
+                this.questionNumber = 5;
                 break;
         }
 
